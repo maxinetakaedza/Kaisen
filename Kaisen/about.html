@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avondale Modern Hub - About</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Onest"', '"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            charcoal: {
+              800: '#2b303a',
+              900: '#1e2229',
+              950: '#13161c',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Ultra-Light Soft Glossy Glassmorphism Effects */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
+    }
+
+    .glass-pill {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+    }
+
+    .glass-input {
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease;
+    }
+
+    .glass-input:focus {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: #2b303a;
+      outline: none;
+    }
+
+    /* Soft Extra Light Pastel Pink Background */
+    body {
+      background-color: #fff0f4;
+      color: #1e2229;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Soft Charcoal Ambient Orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(140px);
+      z-index: -1;
+      opacity: 0.12;
+    }
+
+    /* 3D Dynamic Flip Cards */
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+
+    /* Modern Map Popup Overlay */
+    .leaflet-popup-content-wrapper {
+      border-radius: 20px !important;
+      padding: 6px !important;
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px) !important;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
+    }
+    .leaflet-container {
+      font-family: 'Onest', sans-serif !important;
+    }
+  </style>
+</head>
+<body class="text-charcoal-900 font-sans min-h-screen flex flex-col justify-between selection:bg-charcoal-800 selection:text-white relative overflow-x-hidden">
+
+  <div class="orb w-[500px] h-[500px] bg-slate-400 top-[-100px] left-[-100px]"></div>
+  <div class="orb w-[500px] h-[500px] bg-slate-300 bottom-[-100px] right-[-100px]"></div>
+
+  <header class="sticky top-4 z-50 px-4 md:px-8">
+    <div class="max-w-7xl mx-auto glass-panel rounded-full px-6 py-3.5 flex items-center justify-between">
+      
+      <div class="flex items-center space-x-3">
+        <svg class="w-6 h-6 text-charcoal-900" viewBox="0 0 100 100" fill="currentColor">
+          <path d="M25 15 L15 45 L38 40 Z"/>
+          <path d="M75 15 L85 45 L62 40 Z"/>
+          <circle cx="50" cy="55" r="32"/>
+        </svg>
+        <div>
+          <span class="text-xl font-extrabold tracking-tight text-charcoal-900">Avondale Community</span>
+          <span class="text-[10px] text-slate-500 font-bold tracking-wider uppercase block">Directory &amp; Interactive Map</span>
+        </div>
+      </div>
+
+      <nav class="navbar flex space-x-6 text-sm font-bold text-charcoal-900">
+        <a href="index.html" class="hover:text-slate-600 transition">Home</a>
+        <a href="about.html" class="hover:text-slate-600 transition underline underline-offset-4 decoration-2">About</a>
+        <a href="contact.html" class="hover:text-slate-600 transition">Contact</a>
+      </nav>
+
+      <div class="glass-pill p-1.5 rounded-full flex items-center space-x-2">
+        <button id="nav-btn-directory" onclick="switchTab('directory')" class="bg-charcoal-800 hover:bg-charcoal-900 text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all shadow-md hover:opacity-95">
+          ✨ Directory Cards
+        </button>
+        <button id="nav-btn-map" onclick="switchTab('map')" class="text-charcoal-800 hover:text-black px-6 py-2.5 rounded-full text-xs font-bold transition-all hover:bg-white/50">
+          🗺️ Interactive Live Map
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <div class="max-w-7xl mx-auto w-full px-4 md:px-8 mt-6">
+    <div class="glass-pill rounded-2xl py-3 px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+      <div class="flex items-center space-x-3">
+        <span class="bg-charcoal-800 text-white px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider shadow-sm">Avondale Stats</span>
+        <p class="text-xs font-semibold text-charcoal-900">
+          Over <span class="font-extrabold text-charcoal-900">$32,400 USD</span> in local perks unlocked this month!
+        </p>
+      </div>
+      <span class="text-xs font-bold text-charcoal-900 bg-white/80 px-4 py-1 rounded-full">📍 Avondale Shops • King George Rd</span>
+    </div>
+  </div>
+
+  <main class="max-w-7xl w-full mx-auto px-4 md:px-8 py-6 flex-1">
+
+    <section id="directory-view" class="space-y-6">
+      
+      <div class="glass-panel p-6 md:p-8 rounded-3xl space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-3xl font-extrabold text-charcoal-900 tracking-tight">Avondale Ecosystem</h1>
+            <p class="text-xs md:text-sm text-slate-600 font-medium mt-1">Discover shops, cafes, and healthcare centers around Avondale.</p>
+          </div>
+          <span id="results-count" class="text-xs bg-white/90 text-charcoal-900 font-extrabold px-5 py-2.5 rounded-full shadow-sm border border-white">
+            Showing 7 Local Spots
+          </span>
+        </div>
+
+        <div class="relative">
+          <input
+            id="search-input"
+            type="text"
+            onkeyup="filterShops()"
+            placeholder="Search spots, coffee, emergency, or market items..."
+            class="w-full glass-pill text-charcoal-900 placeholder-slate-400 text-sm rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-charcoal-800 transition-all shadow-inner"
+          />
+          <button onclick="filterShops()" class="absolute right-2 top-2 bottom-2 bg-charcoal-800 hover:bg-charcoal-900 text-white px-6 rounded-xl text-xs font-bold transition shadow-md">
+            Search
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+          <button onclick="selectCategory('all', this)" class="category-btn bg-charcoal-900 text-white px-6 py-2.5 rounded-full text-xs font-extrabold whitespace-nowrap shadow-md transition-all">
+            🔥 All Spots
+          </button>
+          <button onclick="selectCategory('cafe', this)" class="category-btn glass-pill hover:bg-white text-charcoal-900 px-6 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all">
+            ☕ Cafes & Work
+          </button>
+          <button onclick="selectCategory('family', this)" class="category-btn glass-pill hover:bg-white text-charcoal-900 px-6 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all">
+            🍕 Dining & Food
+          </button>
+          <button onclick="selectCategory('health', this)" class="category-btn glass-pill hover:bg-white text-charcoal-900 px-6 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all">
+            🏥 Health & Emergency
+          </button>
+          <button onclick="selectCategory('services', this)" class="category-btn glass-pill hover:bg-white text-charcoal-900 px-6 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all">
+            🎨 Artisans & Crafts
+          </button>
+        </div>
+      </div>
+
+      <div id="shop-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <div class="shop-card h-[400px] perspective-1000" data-category="cafe" data-name="willow & pine coffee house cafe artisan beans pastries local favorite avondale">
+          <div class="card-inner relative w-full h-full transform-style-3d">
+            
+            <div class="card-front absolute inset-0 glass-panel rounded-3xl p-5 flex flex-col justify-between backface-hidden">
+              <div class="relative h-44 rounded-2xl overflow-hidden shadow-inner">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80" alt="Willow & Pine Coffee House Interior" class="w-full h-full object-cover">
+                <span class="absolute top-3 left-3 bg-charcoal-800 text-white text-[10px] font-extrabold px-3 py-1 rounded-full shadow-lg">Café • Local Favorite</span>
+              </div>
+              <div class="mt-3 flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 class="text-xl font-extrabold text-charcoal-900">Willow & Pine Coffee House</h3>
+                  <p class="text-xs text-slate-600 font-medium mt-1">Cozy neighborhood coffee shop with locally roasted beans & fresh pastries.</p>
+                </div>
+                <button onclick="flipCard(this)" class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white py-3 rounded-2xl text-xs font-bold transition shadow-lg flex items-center justify-center gap-2">
+                  🔄 Flip for Details & Offer
+                </button>
+              </div>
+            </div>
+
+            <div class="card-back absolute inset-0 bg-gradient-to-br from-charcoal-900 to-charcoal-950 text-white rounded-3xl p-6 flex flex-col justify-between rotate-y-180 backface-hidden shadow-2xl border border-white/20">
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <h3 class="text-xl font-bold text-white">Willow & Pine</h3>
+                  <span class="text-xs text-slate-300 font-bold">📍 214 Maple Street</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">Warm, community-centered café known for handcrafted drinks, seasonal menus, woman-owned and eco-friendly workspace.</p>
+                <div class="bg-white/10 p-4 rounded-2xl border border-white/10">
+                  <span class="text-[10px] text-slate-300 uppercase font-extrabold tracking-wider block">Exclusive Offer</span>
+                  <p class="text-xs font-bold text-white mt-1">Free Pastry with any Large Roasted Coffee</p>
+                </div>
+              </div>
+              
+              <div class="space-y-2">
+                <button onclick="openBusinessDetails('willow-pine-details')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-2xl text-xs font-bold transition shadow-lg flex items-center justify-center gap-1">
+                  📖 Learn More & View Profile
+                </button>
+                <button onclick="flipCard(this)" class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white py-2 rounded-2xl text-xs font-bold transition border border-white/20">
+                  🔄 Flip Back
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="shop-card h-[400px] perspective-1000" data-category="cafe" data-name="cafe nush coffee wi-fi bakery pizza avondale">
+          <div class="card-inner relative w-full h-full transform-style-3d cursor-pointer">
+            <div class="card-front absolute inset-0 glass-panel rounded-3xl p-5 flex flex-col justify-between backface-hidden">
+              <div class="relative h-44 rounded-2xl overflow-hidden shadow-inner">
+                <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                <span class="absolute top-3 left-3 bg-charcoal-800 text-white text-[10px] font-extrabold px-3 py-1 rounded-full shadow-lg">Café & Workspace</span>
+              </div>
+              <div class="mt-3 flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 class="text-xl font-extrabold text-charcoal-900">Cafe Nush</h3>
+                  <p class="text-xs text-slate-600 font-medium mt-1">Artisan coffees, fresh gourmet pizzas, and high-speed Wi-Fi spot.</p>
+                </div>
+                <button onclick="flipCard(this)" class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white py-3 rounded-2xl text-xs font-bold transition shadow-lg flex items-center justify-center gap-2">
+                  🔄 Flip for Details & Offer
+                </button>
+              </div>
+            </div>
+            <div class="card-back absolute inset-0 bg-gradient-to-br from-charcoal-900 to-charcoal-950 text-white rounded-3xl p-6 flex flex-col justify-between rotate-y-180 backface-hidden shadow-2xl border border-white/20">
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <h3 class="text-xl font-bold text-white">Cafe Nush</h3>
+                  <span class="text-xs text-slate-300 font-bold">📍 Avondale Shops</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">Flagship open-plan cafe featuring outdoor veranda seating, signature espresso blends, gourmet bakery items, and reliable backup power.</p>
+                <div class="bg-white/10 p-4 rounded-2xl border border-white/10">
+                  <span class="text-[10px] text-slate-300 uppercase font-extrabold tracking-wider block">Exclusive Offer</span>
+                  <p class="text-xs font-bold text-white mt-1">Get 10% Off Coffee + Pastry Combo</p>
+                </div>
+              </div>
+              <button onclick="flipCard(this)" class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white py-3 rounded-2xl text-xs font-bold transition shadow-lg">
+                🔄 Flip Back
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="shop-card h-[400px] perspective-1000" data-category="family" data-name="pizza inn fast food takeaway family avondale">
+          <div class="card-inner relative w-full h-full transform-style-3d cursor-pointer">
+            <div class="card-front absolute inset-0 glass-panel rounded-3xl p-5 flex flex-col justify-between backface-hidden">
+              <div class="relative h-44 rounded-2xl overflow-hidden shadow-inner">
+                <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                <span class="absolute top-3 left-3 bg-charcoal-800 text-white text-[10px] font-extrabold px-3 py-1 rounded-full shadow-lg">Fast Food</span>
+              </div>
+              <div class="mt-3 flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 class="text-xl font-extrabold text-charcoal-900">Pizza Inn</h3>
+                  <p class="text-xs text-slate-600 font-medium mt-1">Quick-service pizza hub known for family takeaway deals.</p>
+                </div>
+                <button onclick="flipCard(this)" class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white py-3 rounded-2xl text-xs font-bold transition shadow-lg flex items-center justify-center gap-2">
+                  🔄 Flip for Details & Offer
+                </button>
+              </div>
+            </div>
+            <div class="card-back absolute inset-0 bg-gradient-to-br from-charcoal-900 to-charcoal-950 text-white rounded-3xl p-6 flex flex-col justify-between rotate-y-180 backface-hidden shadow-2xl border border-white/20">
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <h3 class="text-xl font-bold text-white">Pizza Inn</h3>
+                  <span class="text-xs text-slate-300 font-bold">📍 Avondale Shops</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">Favorite fast-casual pizza spot serving classic toppings, garlic breads, and family feast options right in central Avondale.</p>
+                <div class="bg-white/10 p-4 rounded-2xl border border-white/10">
+                  <span class="text-[10px] text-slate-300 uppercase font-extrabold tracking-wider block">Exclusive Offer</span>
+                  <p class="text-xs font-bold text-white mt-1">Terrific Tuesday: Buy 1 Large Pizza Get 1 Free</p>
+                </div>
+              </div>
+              <button onclick="flipCard(this)" class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white py-3 rounded-2xl text-xs font-bold transition shadow-lg">
+                🔄 Flip Back
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="shop-card h-[400px] perspective-1000" data-category="family" data-name="food lovers market supermarket fresh groceries produce deli avondale">
+          <div class="card-inner relative w-full h-full transform-style-3d cursor-pointer">
+            <div class="card-front absolute inset-0 glass-panel rounded-3xl p-5 flex flex-col justify-between backface-hidden">
+              <div class="relative h-44 rounded-2xl overflow-hidden shadow-inner">
+                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                <span class="absolute top-3 left-3 bg-charcoal-800 text-white text-[10px] font-extrabold px-3 py-1 rounded-full shadow-lg">Supermarket</span>
+              </div>
+              <div class="mt-3 flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 class="text-xl font-extrabold text-charcoal-900">Food Lover's Market</h3>
+                  <p class="text-xs text-slate-600 font-medium mt-1">Farm-fresh produce market with bakery, butchery & deli.</p>
+                </div>
+                <button onclick="flipCard(this)" class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white py-3 rounded-2xl text-xs font-bold transition shadow-lg flex items-center justify-center gap-2">
+                  🔄 Flip for Details & Offer
+                </button>
+              </div>
+            </div>
+            <div class="card-back absolute inset-0 bg-gradient-to-br from-charcoal-900 to-charcoal-950 text-white rounded-3xl p-6 flex flex-col justify-between rotate-y-180 backface-hidden shadow-2xl border border-white/20">
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <h3 class="text-xl font-bold text-white">Food Lover's Market</h3>
+                  <span class="text-xs text-slate-300 font-bold">📍 King George Rd</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">Massive grocery complex stocked with fresh local veggies, fruits, gourmet cheeses, hot foods counter, and bakery.</p>
+                <div class="bg-white/10 p-4 rounded-2xl border border-white/10">
+                  <span class="text-[10px] text-slate-300 uppercase font-extrabold tracking-wider block">Exclusive Offer</span>
+                  <p class="text-xs font-bold text-white mt-1">5% Community Cashback on Produce</p>
+                </div>
+              </div>
+              <button onclick="flipCard(this)" class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white py-3 rounded-2xl text-xs font-bold transition shadow-lg">
+                🔄 Flip Back
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="shop-card h-[400px] perspective-1000" data-category="health" data-name="st annes hospital emergency pharmacy doctor medical king george avondale">
+          <div class="card-inner relative w-full h-full transform-style-3d cursor-pointer">
+            <div class="card-front absolute inset-0 glass-panel rounded-3xl p-5 flex flex-col justify-between backface-hidden">
+              <div class="relative h-44 rounded-2xl overflow-hidden shadow-inner">
+                <img src="https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                <span class="absolute top-3 left-3 bg-charcoal-800 text-white text-[10px] font-extrabold px-3 py-1 rounded-full shadow-lg">24/7 Hospital</span>
+              </div>
+              <div class="mt-3 flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 class="text-xl font-extrabold text-charcoal-900">St. Anne's Hospital</h3>
+                  <p class="text-xs text-slate-600 font-medium mt-1">Private medical hospital with emergency care and pharmacy.</p>
+                </div>
+                <button onclick="flipCard(this)" class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white py-3 rounded-2xl text-xs font-bold transition shadow-lg flex items-center justify-center gap-2">
+                  🔄 Flip for Details & Offer
+                </button>
+              </div>
+            </div>
+            <div class="card-back absolute inset-0 bg-gradient-to-br from-charcoal-900 to-charcoal-950 text-white rounded-3xl p-6 flex flex-col justify-between rotate-y-180 backface-hidden shadow-2xl border border-white/20">
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <h3 class="text-xl font-bold text-white">St. Anne's Hospital</h3>
+                  <span class="text-xs text-slate-300 font-bold">📍 King George Rd</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">Full service 165-bed hospital providing 24/7 casualty desk, specialist doctors, and retail pharmacy.</p>
+                <div class="bg-white/10 p-4 rounded-2xl border border-white/10">
+                  <span class="text-[10px] text-slate-300 uppercase font-extrabold tracking-wider block">Service Info</span>
+                  <p class="text-xs font-bold text-white mt-1">24 Hour Emergency Hotline Active</p>
+                </div>
+              </div>
+              <button onclick="flipCard(this)" class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white py-3 rounded-2xl text-xs font-bold transition shadow-lg">
+                🔄 Flip Back
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="shop-card h-[400px] perspective-1000" data-category="services" data-name="avondale flea market stone sculptures crafts vendors souvenirs avondale">
+          <div class="card-inner relative w-full h-full transform-style-3d cursor-pointer">
+            <div class="card-front absolute inset-0 glass-panel rounded-3xl p-5 flex flex-col justify-between backface-hidden">
+              <div class="relative h-44 rounded-2xl overflow-hidden shadow-inner">
+                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                <span class="absolute top-3 left-3 bg-charcoal-800 text-white text-[10px] font-extrabold px-3 py-1 rounded-full shadow-lg">Artisans & Crafts</span>
+              </div>
+              <div class="mt-3 flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 class="text-xl font-extrabold text-charcoal-900">Avondale Flea Market</h3>
+                  <p class="text-xs text-slate-600 font-medium mt-1">Open-air market featuring Shona stone sculptures & local crafts.</p>
+                </div>
+                <button onclick="flipCard(this)" class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white py-3 rounded-2xl text-xs font-bold transition shadow-lg flex items-center justify-center gap-2">
+                  🔄 Flip for Details & Offer
+                </button>
+              </div>
+            </div>
+            <div class="card-back absolute inset-0 bg-gradient-to-br from-charcoal-900 to-charcoal-950 text-white rounded-3xl p-6 flex flex-col justify-between rotate-y-180 backface-hidden shadow-2xl border border-white/20">
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <h3 class="text-xl font-bold text-white">Avondale Flea Market</h3>
+                  <span class="text-xs text-slate-300 font-bold">📍 Bath Rd / Shopping Centre</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">Vibrant outdoor arts center showcasing hand-carved stone art, wooden sculptures, fabrics, and handmade jewelry.</p>
+                <div class="bg-white/10 p-4 rounded-2xl border border-white/10">
+                  <span class="text-[10px] text-slate-300 uppercase font-extrabold tracking-wider block">Exclusive Offer</span>
+                  <p class="text-xs font-bold text-white mt-1">Complimentary Gift Wrapping on Art Pieces</p>
+                </div>
+              </div>
+              <button onclick="flipCard(this)" class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white py-3 rounded-2xl text-xs font-bold transition shadow-lg">
+                🔄 Flip Back
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="shop-card h-[400px] perspective-1000" data-category="family" data-name="queen makeda ethiopian restaurant dining food avondale">
+          <div class="card-inner relative w-full h-full transform-style-3d cursor-pointer">
+            <div class="card-front absolute inset-0 glass-panel rounded-3xl p-5 flex flex-col justify-between backface-hidden">
+              <div class="relative h-44 rounded-2xl overflow-hidden shadow-inner">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                <span class="absolute top-3 left-3 bg-charcoal-800 text-white text-[10px] font-extrabold px-3 py-1 rounded-full shadow-lg">Restaurant</span>
+              </div>
+              <div class="mt-3 flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 class="text-xl font-extrabold text-charcoal-900">Queen Makeda</h3>
+                  <p class="text-xs text-slate-600 font-medium mt-1">Authentic Ethiopian cuisine, rich coffee ceremonies & shared platters.</p>
+                </div>
+                <button onclick="flipCard(this)" class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white py-3 rounded-2xl text-xs font-bold transition shadow-lg flex items-center justify-center gap-2">
+                  🔄 Flip for Details & Offer
+                </button>
+              </div>
+            </div>
+            <div class="card-back absolute inset-0 bg-gradient-to-br from-charcoal-900 to-charcoal-950 text-white rounded-3xl p-6 flex flex-col justify-between rotate-y-180 backface-hidden shadow-2xl border border-white/20">
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <h3 class="text-xl font-bold text-white">Queen Makeda</h3>
+                  <span class="text-xs text-slate-300 font-bold">📍 King George Rd</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">Cultural dining spot serving Injera platters, traditional stews, vegetarian combos, and authentic Ethiopian spiced teas.</p>
+                <div class="bg-white/10 p-4 rounded-2xl border border-white/10">
+                  <span class="text-[10px] text-slate-300 uppercase font-extrabold tracking-wider block">Exclusive Offer</span>
+                  <p class="text-xs font-bold text-white mt-1">Free Coffee Ceremony with Any Platter Order</p>
+                </div>
+              </div>
+              <button onclick="flipCard(this)" class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white py-3 rounded-2xl text-xs font-bold transition shadow-lg">
+                🔄 Flip Back
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="willow-pine-details" class="hidden space-y-6">
+      
+      <div class="flex items-center justify-between">
+        <button onclick="closeBusinessDetails('willow-pine-details')" class="glass-pill px-5 py-2.5 rounded-full text-xs font-extrabold text-charcoal-900 hover:bg-white flex items-center gap-2 transition shadow-sm">
+          ← Back to Directory
+        </button>
+        <span class="text-xs text-slate-500 font-bold">Business Profile Overview</span>
+      </div>
+
+      <div class="glass-panel rounded-3xl overflow-hidden p-3 md:p-4 shadow-xl">
+        <div class="relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-inner">
+          <img 
+            src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80" 
+            alt="Willow & Pine Coffee House Interior" 
+            class="w-full h-full object-cover"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-charcoal-950/60 via-transparent to-transparent"></div>
+          <span class="absolute top-4 left-4 bg-charcoal-800/90 backdrop-blur-md text-white text-xs font-extrabold px-4 py-1.5 rounded-full shadow-md">
+            Cafe • Local Favorite
+          </span>
+        </div>
+
+        <div class="p-6 md:p-8 flex flex-col lg:flex-row justify-between gap-6">
+          <div class="flex-1 space-y-4">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-charcoal-900 tracking-tight">
+              Willow & Pine Coffee House
+            </h1>
+            <p class="text-sm md:text-base text-slate-600 font-medium leading-relaxed max-w-2xl">
+              Cozy neighborhood coffee shop with locally roasted beans, fresh pastries, and community events.
+            </p>
+
+            <div class="flex flex-wrap items-center gap-3 pt-1 text-xs md:text-sm font-semibold text-slate-700">
+              <div class="flex items-center space-x-1 text-amber-500 font-bold">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                <span class="text-charcoal-900 ml-1 font-extrabold">4.8</span>
+              </div>
+              <span class="text-slate-300">•</span>
+              <span>248 reviews</span>
+              <span class="text-slate-300">•</span>
+              <span class="text-emerald-700 font-bold bg-emerald-100/80 px-3 py-1 rounded-full text-[11px]">Open until 8:00 PM</span>
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-2">
+              <span class="bg-white/80 text-charcoal-800 text-xs font-bold px-3.5 py-1.5 rounded-full border border-slate-200/60 shadow-sm">Woman-owned</span>
+              <span class="bg-white/80 text-charcoal-800 text-xs font-bold px-3.5 py-1.5 rounded-full border border-slate-200/60 shadow-sm">Eco-friendly</span>
+              <span class="bg-white/80 text-charcoal-800 text-xs font-bold px-3.5 py-1.5 rounded-full border border-slate-200/60 shadow-sm">Free Wi-Fi</span>
+              <span class="bg-white/80 text-charcoal-800 text-xs font-bold px-3.5 py-1.5 rounded-full border border-slate-200/60 shadow-sm">Outdoor Seating</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2.5 min-w-[220px] justify-center">
+            <button class="w-full bg-charcoal-800 hover:bg-charcoal-900 text-white font-bold py-3 px-6 rounded-2xl text-xs shadow-md transition transform active:scale-[0.98]">
+              🗺️ Get Directions
+            </button>
+            <button class="w-full glass-pill hover:bg-white text-charcoal-900 font-bold py-3 px-6 rounded-2xl text-xs transition border border-white">
+              🌐 Visit Website
+            </button>
+            <button class="w-full glass-pill hover:bg-white text-charcoal-900 font-bold py-3 px-6 rounded-2xl text-xs transition border border-white">
+              📞 Call Business
+            </button>
+            <button class="w-full glass-pill hover:bg-white text-charcoal-900 font-bold py-3 px-6 rounded-2xl text-xs transition border border-white">
+              🔖 Save Profile
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <div class="lg:col-span-2 space-y-6">
+
+          <div class="glass-panel p-6 md:p-8 rounded-3xl space-y-3">
+            <h2 class="text-2xl font-extrabold text-charcoal-900 tracking-tight">About This Business</h2>
+            <p class="text-sm text-slate-600 leading-relaxed font-medium">
+              Willow & Pine Coffee House is a warm, community-centered café known for handcrafted drinks, seasonal menus, and a welcoming atmosphere. Customers come here to meet friends, work remotely, and support a small local business that gives back to the neighborhood.
+            </p>
+          </div>
+
+          <div class="glass-panel p-6 md:p-8 rounded-3xl space-y-4">
+            <h2 class="text-2xl font-extrabold text-charcoal-900 tracking-tight">Photos</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="h-36 rounded-2xl overflow-hidden shadow-sm hover:opacity-95 transition">
+                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover" alt="Coffee preparation" />
+              </div>
+              <div class="h-36 rounded-2xl overflow-hidden shadow-sm hover:opacity-95 transition">
+                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover" alt="Pastries" />
+              </div>
+              <div class="h-36 rounded-2xl overflow-hidden shadow-sm hover:opacity-95 transition">
+                <img src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover" alt="Coffee cup" />
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-panel p-6 md:p-8 rounded-3xl space-y-4">
+            <h2 class="text-2xl font-extrabold text-charcoal-900 tracking-tight">Business Details</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="glass-pill p-4 rounded-2xl">
+                <span class="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Category</span>
+                <span class="text-sm font-bold text-charcoal-900">Cafe, Coffee Shop</span>
+              </div>
+              <div class="glass-pill p-4 rounded-2xl">
+                <span class="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Price Range</span>
+                <span class="text-sm font-bold text-charcoal-900">$$</span>
+              </div>
+              <div class="glass-pill p-4 rounded-2xl">
+                <span class="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Address</span>
+                <span class="text-sm font-bold text-charcoal-900">214 Maple Street, Brookline, MA</span>
+              </div>
+              <div class="glass-pill p-4 rounded-2xl">
+                <span class="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Hours</span>
+                <span class="text-sm font-bold text-charcoal-900">Mon–Sat: 7:00 AM – 8:00 PM</span>
+              </div>
+              <div class="glass-pill p-4 rounded-2xl">
+                <span class="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Phone</span>
+                <span class="text-sm font-bold text-charcoal-900">(617) 555-0182</span>
+              </div>
+              <div class="glass-pill p-4 rounded-2xl">
+                <span class="text-[10px] uppercase font-extrabold text-slate-500 block mb-0.5">Website</span>
+                <span class="text-sm font-bold text-charcoal-900">www.willowandpine.com</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-panel p-6 md:p-8 rounded-3xl space-y-6">
+            <h2 class="text-2xl font-extrabold text-charcoal-900 tracking-tight">Customer Reviews</h2>
+
+            <div class="flex flex-col sm:flex-row gap-6 items-center">
+              <div class="glass-pill p-6 rounded-2xl text-center w-full sm:w-36 flex-shrink-0 border border-white">
+                <h3 class="text-4xl font-extrabold text-charcoal-900">4.8</h3>
+                <p class="text-xs font-bold text-slate-500 mt-1">Average Rating</p>
+              </div>
+
+              <div class="w-full space-y-2 text-xs font-bold text-slate-700">
+                <div class="flex items-center gap-3">
+                  <span class="w-10">5 star</span>
+                  <div class="flex-1 bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
+                    <div class="bg-charcoal-800 h-full rounded-full" style="width: 82%;"></div>
+                  </div>
+                  <span class="w-8 text-right">82%</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="w-10">4 star</span>
+                  <div class="flex-1 bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
+                    <div class="bg-charcoal-800 h-full rounded-full" style="width: 12%;"></div>
+                  </div>
+                  <span class="w-8 text-right">12%</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="w-10">3 star</span>
+                  <div class="flex-1 bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
+                    <div class="bg-charcoal-800 h-full rounded-full" style="width: 4%;"></div>
+                  </div>
+                  <span class="w-8 text-right">4%</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="w-10">2 star</span>
+                  <div class="flex-1 bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
+                    <div class="bg-charcoal-800 h-full rounded-full" style="width: 1%;"></div>
+                  </div>
+                  <span class="w-8 text-right">1%</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="w-10">1 star</span>
+                  <div class="flex-1 bg-slate-200/70 h-2.5 rounded-full overflow-hidden">
+                    <div class="bg-charcoal-800 h-full rounded-full" style="width: 1%;"></div>
+                  </div>
+                  <span class="w-8 text-right">1%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4 pt-4 border-t border-slate-200/60">
+              
+              <div class="glass-pill p-5 rounded-2xl space-y-2">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-extrabold text-charcoal-900 text-sm">Jamie R.</h4>
+                    <div class="text-amber-500 text-xs mt-0.5">★★★★★</div>
+                  </div>
+                  <span class="text-xs text-slate-400 font-medium">June 10, 2026</span>
+                </div>
+                <p class="text-xs md:text-sm text-slate-600 font-medium leading-relaxed">
+                  Love this place. The coffee is consistently great, the pastries are fresh, and the staff are always friendly. Perfect local spot to work for a few hours.
+                </p>
+                <div class="flex gap-2 pt-2">
+                  <button class="bg-white/80 hover:bg-white text-charcoal-900 px-3 py-1 rounded-full text-[11px] font-bold border border-slate-200">👍 Helpful</button>
+                  <button class="bg-white/80 hover:bg-white text-charcoal-900 px-3 py-1 rounded-full text-[11px] font-bold border border-slate-200">💬 Reply</button>
+                </div>
+              </div>
+
+              <div class="glass-pill p-5 rounded-2xl space-y-2">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h4 class="font-extrabold text-charcoal-900 text-sm">Tasha L.</h4>
+                    <div class="text-amber-500 text-xs mt-0.5">★★★★★</div>
+                  </div>
+                  <span class="text-xs text-slate-400 font-medium">May 29, 2026</span>
+                </div>
+                <p class="text-xs md:text-sm text-slate-600 font-medium leading-relaxed">
+                  Super cozy atmosphere and great outdoor seating. I really appreciate how they highlight local artists and host neighborhood events.
+                </p>
+                <div class="flex gap-2 pt-2">
+                  <button class="bg-white/80 hover:bg-white text-charcoal-900 px-3 py-1 rounded-full text-[11px] font-bold border border-slate-200">👍 Helpful</button>
+                  <button class="bg-white/80 hover:bg-white text-charcoal-900 px-3 py-1 rounded-full text-[11px] font-bold border border-slate-200">💬 Reply</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="glass-panel p-6 md:p-8 rounded-3xl space-y-4">
+            <h2 class="text-2xl font-extrabold text-charcoal-900 tracking-tight">Leave a Review</h2>
+            <form onsubmit="event.preventDefault();" class="space-y-3">
+              <input type="text" placeholder="Your name" class="w-full glass-input px-4 py-3 rounded-xl text-xs md:text-sm font-medium text-charcoal-900 placeholder-slate-400" />
+              <select class="w-full glass-input px-4 py-3 rounded-xl text-xs md:text-sm font-medium text-charcoal-900">
+                <option>Select rating</option>
+                <option>5 - Excellent</option>
+                <option>4 - Very Good</option>
+                <option>3 - Good</option>
+                <option>2 - Fair</option>
+                <option>1 - Poor</option>
+              </select>
+              <textarea rows="4" placeholder="Share your experience..." class="w-full glass-input px-4 py-3 rounded-xl text-xs md:text-sm font-medium text-charcoal-900 placeholder-slate-400"></textarea>
+              <button class="bg-charcoal-800 hover:bg-charcoal-900 text-white font-bold py-3 px-6 rounded-xl text-xs shadow-md transition">
+                Submit Review
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+        <aside class="space-y-6">
+
+          <div class="glass-panel p-6 rounded-3xl space-y-3">
+            <h2 class="text-xl font-extrabold text-charcoal-900 tracking-tight">Location</h2>
+            <div class="h-48 rounded-2xl overflow-hidden relative shadow-inner flex items-center justify-center text-white font-bold text-sm bg-cover bg-center" style="background-image: linear-gradient(rgba(30,34,41,0.3), rgba(30,34,41,0.3)), url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80');">
+              <span class="glass-pill px-4 py-2 rounded-full text-charcoal-900 font-extrabold text-xs shadow-lg">🗺️ Map Preview</span>
+            </div>
+          </div>
+
+          <div class="glass-panel p-6 rounded-3xl space-y-3">
+            <h2 class="text-xl font-extrabold text-charcoal-900 tracking-tight">Shop Categories</h2>
+            <ul class="space-y-2">
+              <li class="glass-pill px-4 py-2.5 rounded-xl text-xs font-bold text-charcoal-900 flex items-center space-x-2"><span>☕</span><span>Cafe</span></li>
+              <li class="glass-pill px-4 py-2.5 rounded-xl text-xs font-bold text-charcoal-900 flex items-center space-x-2"><span>🍵</span><span>Coffee & Tea</span></li>
+              <li class="glass-pill px-4 py-2.5 rounded-xl text-xs font-bold text-charcoal-900 flex items-center space-x-2"><span>🥐</span><span>Breakfast Spot</span></li>
+              <li class="glass-pill px-4 py-2.5 rounded-xl text-xs font-bold text-charcoal-900 flex items-center space-x-2"><span>🫘</span><span>Local Roaster</span></li>
+            </ul>
+          </div>
+
+          <div class="glass-panel p-6 rounded-3xl space-y-3">
+            <h2 class="text-xl font-extrabold text-charcoal-900 tracking-tight">Service Options</h2>
+            <ul class="space-y-2">
+              <li class="glass-pill px-4 py-2.5 rounded-xl text-xs font-bold text-charcoal-900 flex items-center space-x-2"><span>🍽️</span><span>Dine-in</span></li>
+              <li class="glass-pill px-4 py-2.5 rounded-xl text-xs font-bold text-charcoal-900 flex items-center space-x-2"><span>🛍️</span><span>Takeout</span></li>
+              <li class="glass-pill px-4 py-2.5 rounded-xl text-xs font-bold text-charcoal-900 flex items-center space-x-2"><span>🛵</span><span>Delivery</span></li>
+              <li class="glass-pill px-4 py-2.5 rounded-xl text-xs font-bold text-charcoal-900 flex items-center space-x-2"><span>🌿</span><span>Outdoor Seating</span></li>
+            </ul>
+          </div>
+
+          <div class="glass-panel p-6 rounded-3xl space-y-3">
+            <h2 class="text-xl font-extrabold text-charcoal-900 tracking-tight">Why Customers Love It</h2>
+            <ul class="space-y-2">
+              <li class="glass-pill px-4 py-2.5 rounded-xl text-xs font-bold text-charcoal-900 flex items-center space-x-2"><span>😊</span><span>Friendly staff</span></li>
+              <li class="glass-pill px-4 py-2.5 rounded-xl text-xs font-bold text-charcoal-900 flex items-center space-x-2"><span>⭐</span><span>Great coffee quality</span></li>
+              <li class="glass-pill px-4 py-2.5 rounded-xl text-xs font-bold text-charcoal-900 flex items-center space-x-2"><span>💻</span><span>Work-friendly space</span></li>
+              <li class="glass-pill px-4 py-2.5 rounded-xl text-xs font-bold text-charcoal-900 flex items-center space-x-2"><span>🤝</span><span>Community presence</span></li>
+            </ul>
+          </div>
+
+        </aside>
+
+      </div>
+    </section>
+
+    <section id="map-view" class="hidden space-y-6">
+      <div class="glass-panel p-6 md:p-8 rounded-3xl space-y-4">
+        <div>
+          <h2 class="text-2xl font-extrabold text-charcoal-900 tracking-tight">Avondale Live Map</h2>
+          <p class="text-xs text-slate-600 font-medium mt-1">Explore real-world GPS coordinates and locations across Avondale.</p>
+        </div>
+        <div id="map" class="h-[550px] w-full rounded-2xl shadow-inner border border-white"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="glass-panel my-6 max-w-7xl mx-auto w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] py-6 px-6 rounded-full text-center text-xs font-bold text-slate-700">
+    <p>© 2026 Small Business Directory — Integrated Avondale Community Ecosystem.</p>
+  </footer>
+
+  <script>
+    // Tab Switch Logic
+    function switchTab(view) {
+      const dirView = document.getElementById('directory-view');
+      const mapView = document.getElementById('map-view');
+      const detailsView = document.getElementById('willow-pine-details');
+
+      const btnDir = document.getElementById('nav-btn-directory');
+      const btnMap = document.getElementById('nav-btn-map');
+
+      detailsView.classList.add('hidden');
+
+      if (view === 'directory') {
+        dirView.classList.remove('hidden');
+        mapView.classList.add('hidden');
+        btnDir.className = "bg-charcoal-800 text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all shadow-md";
+        btnMap.className = "text-charcoal-800 hover:text-black px-6 py-2.5 rounded-full text-xs font-bold transition-all hover:bg-white/50";
+      } else {
+        mapView.classList.remove('hidden');
+        dirView.classList.add('hidden');
+        btnMap.className = "bg-charcoal-800 text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all shadow-md";
+        btnDir.className = "text-charcoal-800 hover:text-black px-6 py-2.5 rounded-full text-xs font-bold transition-all hover:bg-white/50";
+        setTimeout(() => map.invalidateSize(), 200);
+      }
+    }
+
+    // Open & Close Business Profile View
+    function openBusinessDetails(detailsId) {
+      document.getElementById('directory-view').classList.add('hidden');
+      document.getElementById('map-view').classList.add('hidden');
+      document.getElementById(detailsId).classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function closeBusinessDetails(detailsId) {
+      document.getElementById(detailsId).classList.add('hidden');
+      document.getElementById('directory-view').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 3D Card Flip Logic
+    function flipCard(btn) {
+      const cardInner = btn.closest('.card-inner');
+      cardInner.classList.toggle('rotate-y-180');
+    }
+
+    // Filter Logic by Category and Search Input
+    let currentCategory = 'all';
+
+    function selectCategory(category, btnElement) {
+      currentCategory = category;
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.className = "category-btn glass-pill hover:bg-white text-charcoal-900 px-6 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all";
+      });
+      btnElement.className = "category-btn bg-charcoal-900 text-white px-6 py-2.5 rounded-full text-xs font-extrabold whitespace-nowrap shadow-md transition-all";
+      filterShops();
+    }
+
+    function filterShops() {
+      const query = document.getElementById('search-input').value.toLowerCase();
+      const cards = document.querySelectorAll('.shop-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const matchesCategory = (currentCategory === 'all' || card.dataset.category === currentCategory);
+        const matchesSearch = card.dataset.name.toLowerCase().includes(query);
+
+        if (matchesCategory && matchesSearch) {
+          card.style.display = 'block';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      document.getElementById('results-count').innerText = `Showing ${visibleCount} Local Spots`;
+    }
+
+    // LEAFLET MAP INITIALIZATION
+    const map = L.map('map').setView([-17.7885, 31.0380], 15);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(map);
+
+    const spots = [
+      { name: "Willow & Pine Coffee House", coords: [-17.7878, 31.0370], type: "☕ Cafe & Bakery", desc: "Local favorite coffee house & wifi spot" },
+      { name: "Cafe Nush", coords: [-17.7885, 31.0380], type: "☕ Cafe & Workspace", desc: "Artisan Coffee & Woodfired Pizza" },
+      { name: "Food Lover's Market", coords: [-17.7895, 31.0375], type: "🛒 Supermarket", desc: "Fresh produce & gourmet bakery" },
+      { name: "Pizza Inn", coords: [-17.7888, 31.0385], type: "🍕 Fast Food", desc: "Family pizzas & quick delivery" },
+      { name: "St. Anne's Hospital", coords: [-17.7865, 31.0410], type: "🏥 Hospital", desc: "24/7 Emergency Medical Care" },
+      { name: "Avondale Flea Market", coords: [-17.7882, 31.0388], type: "🎨 Flea Market", desc: "Shona stone sculptures & craft vendors" },
+      { name: "Queen Makeda", coords: [-17.7900, 31.0392], type: "🍲 Restaurant", desc: "Authentic Ethiopian platters" }
+    ];
+
+    spots.forEach(spot => {
+      L.marker(spot.coords).addTo(map)
+        .bindPopup(`
+          <div style="font-family: 'Onest', sans-serif;">
+            <strong style="font-size:14px; color:#1e2229;">${spot.name}</strong><br/>
+            <span style="font-size:11px; color:#64748b; font-weight:600;">${spot.type}</span><br/>
+            <p style="font-size:11px; color:#2b303a; margin-top:4px;">${spot.desc}</p>
+          </div>
+        `);
+    });
+  </script>
+</body>
+</html>

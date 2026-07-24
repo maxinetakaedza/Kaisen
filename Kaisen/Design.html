@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAISEN — Merchant Marketing Studio</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=JetBrains+Mono:wght@400;600;700&family=Onest:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&family=Permanent+Marker&display=swap" rel="stylesheet">
+
+  <style>
+    /* SYSTEM PALETTE & DESIGN TOKENS (PASTEL PINK & STRAWBERRY CREAM THEME) */
+    :root {
+      --soft-blush: #FFF0F3;      /* Pastel Cream / White Pink */
+      --lilac-ash: #FFCCD5;       /* Soft Cotton Candy Pink */
+      --gray-olive: #FF85A1;      /* Strawberry Cream Accent */
+      --ebony: #590D22;           /* Deep Berry Wine */
+      --bg-dark: #180C13;          /* Dark Rosewood Background */
+      --card-bg: rgba(40, 20, 30, 0.80);
+      --glass-border: rgba(255, 179, 193, 0.25);
+      --accent-neon: #FF4D6D;     /* Vibrant Glaze Red-Pink */
+      --accent-gold: #FFB3C1;     /* Sweet Pastel Pink Gold */
+      --font-sans: 'Onest', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-dark);
+      color: var(--soft-blush);
+      overflow-x: hidden;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    /* BACKGROUND CANVAS LAYERS */
+    #fluid-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: radial-gradient(115% 95% at 50% 46%, rgba(24, 12, 19, 0.45) 0%, rgba(24, 12, 19, 0.92) 82%);
+    }
+
+    /* HEADER & NAVIGATION */
+    header {
+      position: relative;
+      z-index: 100;
+      background: rgba(24, 12, 19, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 16px 24px;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand-title h1 { font-size: 18px; font-weight: 800; color: var(--soft-blush); }
+    .brand-title p { font-size: 11px; color: var(--lilac-ash); font-family: var(--font-mono); }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--soft-blush);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(255, 179, 193, 0.15);
+      transition: all 0.2s ease;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--accent-neon);
+      color: #ffffff;
+    }
+
+    .merchant-badge {
+      background: rgba(255, 179, 193, 0.18);
+      border: 1px solid rgba(255, 179, 193, 0.45);
+      color: var(--lilac-ash);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* MAIN CONTENT */
+    main {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 32px auto;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .section-head { margin-bottom: 16px; }
+    .section-head h2 { font-size: 1.4rem; font-weight: 800; }
+    .section-head p { font-size: 0.85rem; color: var(--lilac-ash); }
+
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(20px);
+    }
+
+    .input-field, .select-field {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      padding: 12px 16px;
+      border-radius: 12px;
+      color: var(--soft-blush);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      outline: none;
+      margin-bottom: 12px;
+    }
+
+    .select-field option { background: #2a1420; color: var(--soft-blush); }
+
+    .btn-action {
+      background: var(--ebony);
+      color: var(--soft-blush);
+      border: 1px solid var(--gray-olive);
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s ease;
+    }
+    .btn-action:hover { background: var(--lilac-ash); color: var(--ebony); }
+
+    /* CANVA BUILDER STUDIO */
+    .canva-builder {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media(max-width: 900px) { .canva-builder { grid-template-columns: 1fr; } }
+
+    .template-controls { display: flex; flex-direction: column; gap: 12px; }
+
+    .preview-stage {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px dashed var(--glass-border);
+      border-radius: 20px;
+      padding: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 520px;
+    }
+
+    /* BASE CANVAS CARD */
+    .canva-card {
+      width: 310px;
+      min-height: 440px;
+      border-radius: 18px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .uploaded-img-preview {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin: 10px 0;
+      display: none;
+    }
+
+    /* -------------------------------------------------------------
+       CANVA TEMPLATE PRESETS (PASTEL PINK & BERRY PRESETS)
+       ------------------------------------------------------------- */
+
+    /* PRESET 1: PASTEL PINK GLOSS */
+    .canva-card.tmpl-neon {
+      background: linear-gradient(135deg, #2b1320 0%, #421c32 100%);
+      border: 2px solid var(--accent-gold);
+      color: #ffffff;
+    }
+    .canva-card.tmpl-neon .store-name { font-weight: 800; font-size: 18px; letter-spacing: -0.02em; color: var(--soft-blush); }
+    .canva-card.tmpl-neon .offer-text { font-family: var(--font-mono); font-size: 14px; font-weight: 700; margin-top: 6px; }
+    .canva-card.tmpl-neon .canva-qr-box { background: #fff0f3; padding: 10px; border-radius: 12px; margin: 10px 0; }
+    .canva-card.tmpl-neon .canva-footer { font-size: 10px; font-family: var(--font-mono); color: var(--lilac-ash); }
+
+    /* PRESET 2: SOFT STRAWBERRY MINIMAL */
+    .canva-card.tmpl-minimal {
+      background: #fff0f3;
+      border: 6px solid #ff85a1;
+      color: #590d22;
+    }
+    .canva-card.tmpl-minimal .store-name { font-weight: 900; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; color: #590d22; }
+    .canva-card.tmpl-minimal .offer-text { color: #ff4d6d !important; font-family: var(--font-sans); font-size: 16px; font-weight: 800; margin-top: 8px; }
+    .canva-card.tmpl-minimal .canva-qr-box { background: #ff85a1; padding: 10px; border-radius: 6px; margin: 10px 0; }
+    .canva-card.tmpl-minimal .canva-qr-box svg path { fill: #fff0f3; }
+    .canva-card.tmpl-minimal .canva-footer { font-size: 10px; font-family: var(--font-mono); color: #590d22; }
+
+    /* PRESET 3: RETRO PASTEL PAPER */
+    .canva-card.tmpl-retro {
+      background: #ffecd1;
+      border: 3px dashed #ffb3c1;
+      color: #4a1525;
+      font-family: 'Playfair Display', serif;
+    }
+    .canva-card.tmpl-retro .store-name { font-size: 22px; font-weight: 700; font-style: italic; }
+    .canva-card.tmpl-retro .offer-text { color: #ff4d6d !important; font-size: 15px; font-weight: 700; margin-top: 8px; }
+    .canva-card.tmpl-retro .canva-qr-box { background: #4a1525; padding: 10px; border-radius: 8px; margin: 10px 0; }
+    .canva-card.tmpl-retro .canva-qr-box svg path { fill: #ffecd1; }
+    .canva-card.tmpl-retro .canva-footer { font-size: 10px; font-family: 'Playfair Display', serif; color: #a44a60; }
+
+    /* PRESET 4: ROSE GOLD BAKERY CREST */
+    .canva-card.tmpl-royal {
+      background: linear-gradient(145deg, #280f1d 0%, #471d34 100%);
+      border: 2px solid #ffb3c1;
+      color: #fff0f3;
+      font-family: 'Cinzel', serif;
+    }
+    .canva-card.tmpl-royal .store-name { font-size: 19px; font-weight: 700; letter-spacing: 1px; color: #ffccd5; }
+    .canva-card.tmpl-royal .offer-text { color: #ffffff !important; font-size: 13px; margin-top: 8px; text-transform: uppercase; }
+    .canva-card.tmpl-royal .canva-qr-box { background: #ffccd5; padding: 10px; border-radius: 12px; margin: 10px 0; }
+    .canva-card.tmpl-royal .canva-qr-box svg path { fill: #280f1d; }
+    .canva-card.tmpl-royal .canva-footer { font-size: 9px; font-family: var(--font-mono); color: #ff85a1; }
+
+    /* PRESET 5: POP PASTEL STREET */
+    .canva-card.tmpl-street {
+      background: #200b18;
+      border: 4px solid #ff4d6d;
+      color: #ffb3c1;
+      font-family: 'Permanent Marker', cursive;
+    }
+    .canva-card.tmpl-street .store-name { font-size: 22px; color: #fff0f3; text-shadow: 2px 2px #ff4d6d; }
+    .canva-card.tmpl-street .offer-text { color: #ffccd5 !important; font-size: 16px; margin-top: 8px; transform: rotate(-2deg); }
+    .canva-card.tmpl-street .canva-qr-box { background: #ff4d6d; padding: 10px; border-radius: 4px; margin: 10px 0; }
+    .canva-card.tmpl-street .canva-qr-box svg path { fill: #200b18; }
+    .canva-card.tmpl-street .canva-footer { font-size: 10px; font-family: var(--font-mono); color: #fff0f3; }
+
+    .script-box {
+      background: rgba(0,0,0,0.35);
+      border: 1px solid var(--glass-border);
+      padding: 16px;
+      border-radius: 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--soft-blush);
+      white-space: pre-wrap;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="fluid-canvas"></canvas>
+  <div class="scrim"></div>
+
+  <header>
+    <div class="nav-container">
+      <div class="brand-title">
+        <h1>KAISEN — Marketing Toolkit Studio</h1>
+        <p>Avondale Artisan Bakery — Store #104</p>
+      </div>
+
+      <nav class="nav-links">
+        <a href="index1.html">🏪 Business Home</a>
+        <a href="Owner.html">👔 Owner</a>
+        <a href="Mentor.html">🎓 Mentor</a>
+        <a href="Delivery.html">🛵 Delivery</a>
+        <a href="design.html" class="active">🎨 Design</a>
+      </nav>
+
+      <span class="merchant-badge">MARKETING HUB</span>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <div class="section-head">
+        <h2>1. Dynamic Visual Template Studio</h2>
+        <p>Customize store signage, choose design presets, or paste/upload images directly onto the canvas.</p>
+      </div>
+
+      <div class="canva-builder glass-card">
+        <div class="template-controls">
+          <h3 style="font-size: 15px;">Template Customizer</h3>
+          
+          <div>
+            <label style="font-size: 11px; font-family: var(--font-mono); color: var(--lilac-ash);">Select Design Preset</label>
+            <select id="preset-select" class="select-field" onchange="updateTemplate()">
+              <option value="tmpl-neon">🌸 Soft Pastel Pink Gloss</option>
+              <option value="tmpl-minimal">🍓 Strawberry Cream Light</option>
+              <option value="tmpl-retro">📜 Warm Parchment & Rose</option>
+              <option value="tmpl-royal">👑 Rose Gold Bakery Crest</option>
+              <option value="tmpl-street">🎨 Pop Pastel Chalkboard</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size: 11px; font-family: var(--font-mono); color: var(--lilac-ash);">Store Name / Headline</label>
+            <input type="text" id="edit-store" class="input-field" value="Avondale Artisan Bakery" oninput="updateTemplate()">
+          </div>
+
+          <div>
+            <label style="font-size: 11px; font-family: var(--font-mono); color: var(--lilac-ash);">Offer Headline</label>
+            <input type="text" id="edit-offer" class="input-field" value="Get 10% Off Sourdough" oninput="updateTemplate()">
+          </div>
+
+          <div>
+            <label style="font-size: 11px; font-family: var(--font-mono); color: var(--lilac-ash);">Upload Product Image / Logo (Or Paste Ctrl+V)</label>
+            <input type="file" id="image-upload" accept="image/*" class="input-field" onchange="handleImageUpload(event)">
+          </div>
+
+          <div>
+            <label style="font-size: 11px; font-family: var(--font-mono); color: var(--lilac-ash);">Accent Color</label>
+            <input type="color" id="edit-color" value="#ffccd5" style="width:100%; height:36px; border:none; border-radius:8px; cursor:pointer;" onchange="updateTemplate()">
+          </div>
+
+          <button class="btn-action" onclick="alert('🎨 Exporting high-res printable PDF layout...')">DOWNLOAD PRINTABLE PDF</button>
+        </div>
+
+        <div class="preview-stage" id="stage-area">
+          <div class="canva-card tmpl-neon" id="card-preview">
+            <div>
+              <div class="store-name" id="preview-store">Avondale Artisan Bakery</div>
+              <div class="offer-text" id="preview-offer">Get 10% Off Sourdough</div>
+            </div>
+
+            <img id="card-img-element" class="uploaded-img-preview" alt="Product Preview">
+
+            <div class="canva-qr-box">
+              <svg width="90" height="90" viewBox="0 0 100 100">
+                <path d="M0,0 h30 v30 h-30 z M10,10 h10 v10 h-10 z M70,0 h30 v30 h-30 z M80,10 h10 v10 h-10 z M0,70 h30 v30 h-30 z M10,80 h10 v10 h-10 z M40,10 h10 v20 h-10 z M50,40 h20 v10 h-20 z M30,50 h10 v30 h-10 z M70,70 h20 v20 h-20 z" fill="#180c13"/>
+              </svg>
+            </div>
+
+            <div class="canva-footer">
+              SCAN TO CLAIM LOCAL REWARDS<br>
+              <strong>KAISEN LOCAL LOYALTY</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>2. Community WhatsApp Broadcast Copy</h2>
+        <p>Pre-formatted copy ready to send out to local neighborhood groups.</p>
+      </div>
+
+      <div class="glass-card">
+        <div class="script-box" id="broadcast-copy">🍞 *FRESH BATCH ALERT — Avondale Artisan Bakery* 🍞
+
+Hey neighbors! Fresh sourdough just came out of the oven! 
+
+Claim your *10% OFF Voucher* on the KAISEN Local Portal today. 
+
+👉 Open Portal to Claim: https://kaisen.local/avondale
+📍 Location: King George Rd, Avondale</div>
+
+        <button class="btn-action" style="width: auto;" onclick="copyBroadcast()">COPY WHATSAPP SCRIPT</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function updateTemplate() {
+      const preset = document.getElementById('preset-select').value;
+      const storeName = document.getElementById('edit-store').value;
+      const offerText = document.getElementById('edit-offer').value;
+      const accentColor = document.getElementById('edit-color').value;
+
+      const card = document.getElementById('card-preview');
+      card.className = `canva-card ${preset}`;
+
+      document.getElementById('preview-store').innerText = storeName || "Your Store Name";
+      document.getElementById('preview-offer').innerText = offerText || "Your Special Offer";
+
+      if (preset === 'tmpl-neon') {
+        document.getElementById('preview-offer').style.color = accentColor;
+        card.style.borderColor = accentColor;
+      } else {
+        card.style.borderColor = '';
+        document.getElementById('preview-offer').style.color = '';
+      }
+    }
+
+    function handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const imgEl = document.getElementById('card-img-element');
+          imgEl.src = e.target.result;
+          imgEl.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // PASTE IMAGE DIRECTLY INTO CANVAS
+    document.addEventListener('paste', function(e) {
+      const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      for (let item of items) {
+        if (item.type.indexOf('image') === 0) {
+          const blob = item.getAsFile();
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            const imgEl = document.getElementById('card-img-element');
+            imgEl.src = event.target.result;
+            imgEl.style.display = 'block';
+          };
+          reader.readAsDataURL(blob);
+          alert("📸 Image pasted into template!");
+        }
+      }
+    });
+
+    function copyBroadcast() {
+      const text = document.getElementById('broadcast-copy').innerText;
+      navigator.clipboard.writeText(text);
+      alert("📋 WhatsApp Broadcast script copied to clipboard!");
+    }
+  </script>
+
+  <script>
+    (function initFluid() {
+      const canvas = document.getElementById('fluid-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      // Soft ambient fluid background colors (Pastel Pink, Rose, Soft Cream)
+      const colors = ['rgba(255, 204, 213, 0.12)', 'rgba(255, 179, 193, 0.10)', 'rgba(255, 133, 161, 0.07)'];
+      let blobs = [];
+
+      for (let i = 0; i < 12; i++) {
+        blobs.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 180 + 80,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4
+        });
+      }
+
+      function render() {
+        ctx.fillStyle = '#180c13';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        blobs.forEach(b => {
+          b.x += b.vx;
+          b.y += b.vy;
+          if (b.x < -b.radius) b.x = canvas.width + b.radius;
+          if (b.x > canvas.width + b.radius) b.x = -b.radius;
+          if (b.y < -b.radius) b.y = canvas.height + b.radius;
+          if (b.y > canvas.height + b.radius) b.y = -b.radius;
+
+          let grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.radius);
+          grad.addColorStop(0, b.color);
+          grad.addColorStop(1, 'transparent');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        requestAnimationFrame(render);
+      }
+      render();
+    })();
+  </script>
+</body>
+</html>

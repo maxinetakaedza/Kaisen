@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentor Hub | LocalConnect</title>
+  <style>
+    :root{
+      --c1:#F1DEDE;
+      --c2:#BBACC1;
+      --c3:#80727B;
+      --c4:#909580;
+      --c5:#545643;
+      --white:#ffffff;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;}
+
+    body{
+      background:
+        radial-gradient(circle at 10% 20%, #ffffff80 0%, transparent 35%),
+        radial-gradient(circle at 90% 10%, #ffffff66 0%, transparent 30%),
+        linear-gradient(135deg, var(--c1), #f7f1fa 60%, #efe8f4);
+      color:var(--c5);
+      min-height:100vh;
+    }
+
+    /* TOPBAR & NAVIGATION */
+    .topbar{
+      position:sticky; top:0; z-index:20;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:14px 22px;
+      background:#ffffffcc;
+      backdrop-filter: blur(8px);
+      border-bottom:1px solid var(--c2);
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .brand{font-weight:900; letter-spacing:.2px;}
+    .brand small{font-weight:600; color:var(--c3); margin-left:6px;}
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--c5);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(187, 172, 193, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--c5);
+      color: #ffffff;
+    }
+
+    .wrap{
+      max-width:1150px; margin:20px auto; padding:0 14px 24px;
+      display:grid; gap:14px;
+    }
+
+    .hero{
+      display:grid; grid-template-columns: 1.15fr .85fr; gap:14px; align-items:stretch;
+    }
+
+    .hero-left{
+      background:linear-gradient(160deg, #fff, #f8f3fb);
+      border:1px solid var(--c2); border-radius:20px; padding:18px;
+      box-shadow:0 14px 30px rgba(84,86,67,.07);
+      display:grid; gap:12px;
+    }
+
+    .hero-left h1{font-size:2rem; line-height:1.12;}
+    .hero-left p{color:#4a4a4a; max-width:62ch;}
+
+    .chips{display:flex; gap:8px; flex-wrap:wrap;}
+    .chip{
+      background:#fff; border:1px solid var(--c2); color:var(--c3);
+      border-radius:999px; padding:7px 11px; font-size:.82rem; font-weight:700;
+    }
+
+    .hero-right{
+      border-radius:20px; overflow:hidden; border:1px solid #a89bb0;
+      box-shadow:0 14px 30px rgba(84,86,67,.08);
+      position:relative; min-height:250px;
+    }
+
+    .hero-right img{width:100%; height:100%; object-fit:cover;}
+    .floating-stat{
+      position:absolute; left:12px; bottom:12px;
+      background:#ffffffd9; border:1px solid var(--c2);
+      border-radius:12px; padding:8px 10px; font-size:.86rem; font-weight:700;
+    }
+
+    .toolbar{
+      background:#ffffffd9; border:1px solid var(--c2); border-radius:16px; padding:10px;
+      display:grid; grid-template-columns:1.2fr .8fr .6fr auto; gap:8px; align-items:center;
+    }
+
+    input, select, textarea{
+      width:100%; padding:10px; border:1px solid var(--c2);
+      border-radius:10px; background:#fff; color:var(--c5);
+    }
+
+    .btn{
+      border:none; border-radius:10px; padding:10px 12px; font-weight:800; cursor:pointer;
+    }
+
+    .btn-dark{background:var(--c5); color:#fff;}
+    .btn-dark:hover{background:#3d3f32;}
+    .btn-soft{background:var(--c2); color:#2f2f2f;}
+    .btn-soft:hover{filter:brightness(.96);}
+
+    .categories{display:flex; gap:8px; flex-wrap:wrap;}
+    .cat-btn{
+      border:1px solid var(--c2); background:#fff; color:var(--c3);
+      padding:8px 12px; border-radius:999px; font-weight:700; cursor:pointer;
+    }
+    .cat-btn.active{background:var(--c3); color:#fff; border-color:var(--c3);}
+
+    .mentor-grid{display:grid; grid-template-columns: repeat(12, 1fr); gap:12px;}
+    .mentor-card{
+      grid-column: span 4; background:#fff; border:1px solid var(--c2);
+      border-radius:16px; overflow:hidden; box-shadow:0 8px 18px rgba(84,86,67,.06);
+      display:grid; grid-template-rows:170px auto; transition:.2s ease;
+    }
+
+    .mentor-card:hover{transform:translateY(-3px); box-shadow:0 12px 22px rgba(84,86,67,.1);}
+    .mentor-card img{width:100%; height:100%; object-fit:cover;}
+    .mentor-body{padding:11px; display:grid; gap:6px;}
+    .meta-row{display:flex; justify-content:space-between; align-items:center; gap:8px;}
+
+    .badge{
+      display:inline-block; background:var(--c4); color:#fff;
+      font-size:.72rem; border-radius:999px; padding:4px 8px; font-weight:700;
+    }
+
+    .rating{color:var(--c3); font-weight:800; font-size:.9rem;}
+    .specialty{color:#5f5460; font-size:.92rem; min-height:38px;}
+    .price{font-size:1.1rem; font-weight:900; color:var(--c5);}
+    .price span{font-size:.83rem; color:var(--c3); font-weight:700;}
+
+    .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;}
+    .book{background:var(--c3); color:#fff;}
+    .book:hover{background:#6f636b;}
+    .profile{background:#fff; color:var(--c3); border:1px solid var(--c2);}
+
+    .message{
+      background:#fff; border:1px dashed var(--c2); border-radius:12px;
+      padding:10px; font-size:.93rem;
+    }
+
+    .empty{
+      grid-column:1/-1; text-align:center; padding:20px;
+      border:1px dashed var(--c2); border-radius:14px;
+      background:#fff; color:var(--c3); font-weight:700;
+    }
+
+    .overlay{
+      position:fixed; inset:0; z-index:99; background:rgba(0,0,0,.38);
+      display:none; align-items:center; justify-content:center; padding:14px;
+    }
+
+    .modal{
+      width:min(760px,100%); background:#fff; border:1px solid var(--c2);
+      border-radius:16px; overflow:hidden; display:grid; grid-template-columns:.95fr 1.05fr;
+    }
+
+    .modal img{width:100%; height:100%; object-fit:cover; min-height:290px;}
+    .modal-content{padding:14px; display:grid; gap:8px; align-content:start;}
+    .modal-head{display:flex; justify-content:space-between; align-items:center; gap:10px;}
+    .close{
+      border:none; background:#eee; color:#333; border-radius:8px;
+      padding:6px 10px; cursor:pointer; font-weight:800;
+    }
+
+    .bullets{
+      padding-left:16px; color:#4f4f4f; display:grid; gap:4px; font-size:.92rem;
+    }
+
+    .session-item{
+      border:1px solid var(--c2); border-radius:10px; padding:8px; margin-bottom:8px;
+      background:#fff;
+    }
+
+    .review-row{
+      display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;
+    }
+
+    #reviewMsg{margin-top:8px; font-weight:700;}
+
+    @media (max-width:1020px){
+      .hero{grid-template-columns:1fr;}
+      .toolbar{grid-template-columns:1fr;}
+      .mentor-card{grid-column:span 6;}
+      .modal{grid-template-columns:1fr;}
+      .review-row{grid-template-columns:1fr;}
+    }
+
+    @media (max-width:700px){
+      .mentor-card{grid-column:span 12;}
+      .hero-left h1{font-size:1.6rem;}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">🎓 Mentor Hub <small>by LocalConnect</small></div>
+
+    <nav class="nav-links">
+      <a href="index1.html">🏪 Business Home</a>
+      <a href="Owner.html">👔 Owner</a>
+      <a href="Mentor.html" class="active">🎓 Mentor</a>
+      <a href="Delivery.html">🛵 Delivery</a>
+      <a href="design.html">🎨 Design</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <article class="hero-left">
+        <h1>Learn with local experts who actually get your goals</h1>
+        <p>
+          Explore teachers, accountants, and consultants. Filter by category,
+          compare prices, check ratings, and instantly book a session.
+        </p>
+        <div class="chips">
+          <span class="chip">⭐ Top-rated mentors</span>
+          <span class="chip">💬 Fast response</span>
+          <span class="chip">📍 Local support</span>
+          <span class="chip">🎯 Skill-focused learning</span>
+        </div>
+      </article>
+
+      <aside class="hero-right">
+        <img src="https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80" alt="Mentor and learner">
+        <div class="floating-stat">🔥 124 sessions booked this week</div>
+      </aside>
+    </section>
+
+    <section class="toolbar">
+      <input id="searchInput" type="text" placeholder="Search by mentor name, skill, or keyword..." />
+      <select id="sortSelect">
+        <option value="default">Sort: Recommended</option>
+        <option value="priceLow">Price: Low → High</option>
+        <option value="priceHigh">Price: High → Low</option>
+        <option value="ratingHigh">Rating: High → Low</option>
+      </select>
+      <select id="availabilitySelect">
+        <option value="all">Availability: Any</option>
+        <option value="today">Available Today</option>
+        <option value="weekend">Weekend</option>
+      </select>
+      <button class="btn btn-dark" id="clearBtn">Reset</button>
+    </section>
+
+    <section class="categories" id="categoryTabs">
+      <button class="cat-btn active" data-category="All">All</button>
+      <button class="cat-btn" data-category="Teachers">Teachers</button>
+      <button class="cat-btn" data-category="Accountants">Accountants</button>
+      <button class="cat-btn" data-category="Consultants">Consultants</button>
+    </section>
+
+    <section id="mentorGrid" class="mentor-grid"></section>
+
+    <section id="bookMessage" class="message">
+      Pick a mentor to book a session or view full profile details.
+    </section>
+
+    <section class="message" id="sessionPanel">
+      <h3 style="margin-bottom:8px;">My Sessions</h3>
+      <div id="sessionList">No sessions booked yet.</div>
+    </section>
+
+    <section class="message" id="reviewPanel">
+      <h3 style="margin-bottom:8px;">Leave a Review</h3>
+      <select id="reviewSessionSelect">
+        <option value="">Select completed session</option>
+      </select>
+
+      <div class="review-row">
+        <select id="reviewRating">
+          <option value="">Rating</option>
+          <option value="5">5 - Excellent</option>
+          <option value="4">4 - Great</option>
+          <option value="3">3 - Good</option>
+          <option value="2">2 - Fair</option>
+          <option value="1">1 - Poor</option>
+        </select>
+        <input id="reviewTitle" type="text" placeholder="Review title (optional)" />
+      </div>
+
+      <textarea id="reviewText" placeholder="Write your feedback..."></textarea>
+      <button class="btn btn-dark" id="submitReviewBtn" style="margin-top:8px;">Submit Review</button>
+      <p id="reviewMsg"></p>
+    </section>
+  </main>
+
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <img id="mImg" src="" alt="Mentor">
+      <div class="modal-content">
+        <div class="modal-head">
+          <h3 id="mName"></h3>
+          <button class="close" id="closeModal">Close</button>
+        </div>
+        <span class="badge" id="mBadge"></span>
+        <p id="mSpecialty"></p>
+        <p><strong>Rating:</strong> <span id="mRating"></span></p>
+        <p><strong>Price:</strong> $<span id="mPrice"></span> / hour</p>
+        <p><strong>Availability:</strong> <span id="mAvailability"></span></p>
+        <p id="mBio"></p>
+        <ul class="bullets" id="mHighlights"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const mentors = [
+      { id:1, name:"Sarah Jenkins", category:"Teachers", badge:"Education", specialty:"High School Math & Physics Teacher", rating:4.9, reviews:42, price:30, availability:["today","weekend"], keywords:["math","physics","school","exam"], image:"https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=700&q=80", bio:"10+ years helping students improve grades, confidence, and exam outcomes.", highlights:["Personal study plans","Weekly progress reports","Exam strategy coaching"] },
+      { id:2, name:"David Chen, CPA", category:"Accountants", badge:"Finance", specialty:"Small Business Tax & Accounting", rating:5.0, reviews:18, price:65, availability:["weekend"], keywords:["tax","accounting","bookkeeping","finance"], image:"https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=700&q=80", bio:"Certified CPA focused on tax optimization and clean financial systems.", highlights:["Tax filing support","Cashflow analysis","Quarterly planning"] },
+      { id:3, name:"Maria Lopez", category:"Consultants", badge:"Consulting", specialty:"Startup Growth & Operations Consultant", rating:4.8, reviews:27, price:50, availability:["today"], keywords:["startup","growth","operations","strategy"], image:"https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=700&q=80", bio:"Helps startups scale operations and build practical growth systems.", highlights:["Growth roadmap","Operations audit","Team workflow setup"] },
+      { id:4, name:"James Miller", category:"Teachers", badge:"Education", specialty:"SAT Prep & English Tutor", rating:4.7, reviews:33, price:28, availability:["today"], keywords:["sat","english","writing","prep"], image:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&q=80", bio:"Focused SAT and writing mentorship with measurable score improvement.", highlights:["Essay feedback","Timed practice","Score tracking"] },
+      { id:5, name:"Amina Yusuf", category:"Consultants", badge:"Business", specialty:"Marketing & Brand Strategy Consultant", rating:4.9, reviews:22, price:58, availability:["weekend"], keywords:["marketing","brand","social media","strategy"], image:"https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=700&q=80", bio:"Builds clear brand strategy and marketing plans for local businesses.", highlights:["Brand positioning","Campaign planning","Content strategy"] },
+      { id:6, name:"Noah Patel", category:"Accountants", badge:"Finance", specialty:"Payroll, Invoicing & Cashflow Advisor", rating:4.6, reviews:14, price:40, availability:["today","weekend"], keywords:["payroll","invoice","cashflow","small business"], image:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=700&q=80", bio:"Supports owners with day-to-day finance operations and cash control.", highlights:["Payroll setup","Invoice systems","Cashflow forecasting"] }
+    ];
+
+    let category = "All";
+    let search = "";
+    let sort = "default";
+    let availability = "all";
+
+    // Review flow state
+    let sessions = [];
+    let reviews = [];
+
+    const mentorGrid = document.getElementById("mentorGrid");
+    const searchInput = document.getElementById("searchInput");
+    const sortSelect = document.getElementById("sortSelect");
+    const availabilitySelect = document.getElementById("availabilitySelect");
+    const clearBtn = document.getElementById("clearBtn");
+    const categoryTabs = document.getElementById("categoryTabs");
+    const bookMessage = document.getElementById("bookMessage");
+
+    const sessionList = document.getElementById("sessionList");
+    const reviewSessionSelect = document.getElementById("reviewSessionSelect");
+    const reviewRating = document.getElementById("reviewRating");
+    const reviewTitle = document.getElementById("reviewTitle");
+    const reviewText = document.getElementById("reviewText");
+    const submitReviewBtn = document.getElementById("submitReviewBtn");
+    const reviewMsg = document.getElementById("reviewMsg");
+
+    const overlay = document.getElementById("overlay");
+    const closeModal = document.getElementById("closeModal");
+    const mImg = document.getElementById("mImg");
+    const mName = document.getElementById("mName");
+    const mBadge = document.getElementById("mBadge");
+    const mSpecialty = document.getElementById("mSpecialty");
+    const mRating = document.getElementById("mRating");
+    const mPrice = document.getElementById("mPrice");
+    const mAvailability = document.getElementById("mAvailability");
+    const mBio = document.getElementById("mBio");
+    const mHighlights = document.getElementById("mHighlights");
+
+    function getFiltered(){
+      let data = [...mentors];
+
+      if(category !== "All") data = data.filter(m => m.category === category);
+
+      if(search.trim()){
+        const q = search.toLowerCase();
+        data = data.filter(m =>
+          m.name.toLowerCase().includes(q) ||
+          m.specialty.toLowerCase().includes(q) ||
+          m.category.toLowerCase().includes(q) ||
+          m.keywords.some(k => k.toLowerCase().includes(q))
+        );
+      }
+
+      if(availability !== "all") data = data.filter(m => m.availability.includes(availability));
+
+      if(sort === "priceLow") data.sort((a,b)=>a.price-b.price);
+      if(sort === "priceHigh") data.sort((a,b)=>b.price-a.price);
+      if(sort === "ratingHigh") data.sort((a,b)=>b.rating-a.rating);
+
+      return data;
+    }
+
+    function render(){
+      const list = getFiltered();
+      mentorGrid.innerHTML = "";
+
+      if(!list.length){
+        mentorGrid.innerHTML = `<div class="empty">No mentors found — try another filter 🔎</div>`;
+        return;
+      }
+
+      list.forEach(m => {
+        const card = document.createElement("article");
+        card.className = "mentor-card";
+        card.innerHTML = `
+          <img src="${m.image}" alt="${m.name}">
+          <div class="mentor-body">
+            <div class="meta-row">
+              <span class="badge">${m.badge}</span>
+              <span class="rating">⭐ ${m.rating} (${m.reviews})</span>
+            </div>
+            <h3>${m.name}</h3>
+            <p class="specialty">${m.specialty}</p>
+            <div class="price">$${m.price} <span>/ hour</span></div>
+            <div class="actions">
+              <button class="btn book" data-id="${m.id}">Book Session</button>
+              <button class="btn profile" data-id="${m.id}">View Profile</button>
+            </div>
+          </div>
+        `;
+        mentorGrid.appendChild(card);
+      });
+
+      document.querySelectorAll(".book").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const mentor = mentors.find(x => x.id === Number(btn.dataset.id));
+          const newSession = {
+            id: Date.now() + Math.floor(Math.random() * 1000),
+            mentorId: mentor.id,
+            status: "booked",
+            reviewed: false
+          };
+          sessions.push(newSession);
+
+          bookMessage.innerHTML = `✅ Session booked with <strong>${mentor.name}</strong> at <strong>$${mentor.price}/hour</strong>.`;
+          renderSessions();
+          renderReviewOptions();
+        });
+      });
+
+      document.querySelectorAll(".profile").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const mentor = mentors.find(x => x.id === Number(btn.dataset.id));
+          mImg.src = mentor.image;
+          mName.textContent = mentor.name;
+          mBadge.textContent = mentor.badge;
+          mSpecialty.textContent = mentor.specialty;
+          mRating.textContent = `${mentor.rating} (${mentor.reviews} reviews)`;
+          mPrice.textContent = mentor.price;
+          mAvailability.textContent = mentor.availability.map(v => v === "today" ? "Today" : "Weekend").join(", ");
+          mBio.textContent = mentor.bio;
+          mHighlights.innerHTML = mentor.highlights.map(h => `<li>${h}</li>`).join("");
+          overlay.style.display = "flex";
+        });
+      });
+    }
+
+    function renderSessions(){
+      if(!sessions.length){
+        sessionList.textContent = "No sessions booked yet.";
+        return;
+      }
+
+      sessionList.innerHTML = sessions.map(s => {
+        const mentor = mentors.find(m => m.id === s.mentorId);
+        return `
+          <div class="session-item">
+            <strong>${mentor.name}</strong> — $${mentor.price}/hour
+            <div>Status: <strong>${s.status}</strong>${s.reviewed ? " • Reviewed ✅" : ""}</div>
+            ${s.status === "booked" ? `<button class="btn btn-soft mark-complete-btn" data-id="${s.id}" style="margin-top:6px;">Mark Completed (Demo)</button>` : ""}
+          </div>
+        `;
+      }).join("");
+
+      document.querySelectorAll(".mark-complete-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const sessionId = Number(btn.dataset.id);
+          const session = sessions.find(s => s.id === sessionId);
+          if(session){
+            session.status = "completed";
+            renderSessions();
+            renderReviewOptions();
+          }
+        });
+      });
+    }
+
+    function renderReviewOptions(){
+      const eligible = sessions.filter(s => s.status === "completed" && !s.reviewed);
+      reviewSessionSelect.innerHTML = `<option value="">Select completed session</option>` +
+        eligible.map(s => {
+          const mentor = mentors.find(m => m.id === s.mentorId);
+          return `<option value="${s.id}">${mentor.name} (Session #${s.id})</option>`;
+        }).join("");
+    }
+
+    function submitReview(){
+      const sessionId = Number(reviewSessionSelect.value);
+      const rating = Number(reviewRating.value);
+      const title = reviewTitle.value.trim();
+      const text = reviewText.value.trim();
+
+      if(!sessionId || !rating || !text){
+        reviewMsg.style.color = "crimson";
+        reviewMsg.textContent = "Please select a completed session, choose rating, and write feedback.";
+        return;
+      }
+
+      const session = sessions.find(s => s.id === sessionId);
+      if(!session || session.status !== "completed" || session.reviewed){
+        reviewMsg.style.color = "crimson";
+        reviewMsg.textContent = "This session is not eligible for review.";
+        return;
+      }
+
+      const mentor = mentors.find(m => m.id === session.mentorId);
+
+      reviews.push({
+        id: Date.now(),
+        sessionId,
+        mentorId: mentor.id,
+        rating,
+        title,
+        text,
+        createdAt: new Date().toISOString()
+      });
+
+      // Update aggregate mentor rating safely
+      const newTotal = mentor.rating * mentor.reviews + rating;
+      mentor.reviews += 1;
+      mentor.rating = Number((newTotal / mentor.reviews).toFixed(1));
+
+      session.reviewed = true;
+
+      reviewMsg.style.color = "green";
+      reviewMsg.textContent = `✅ Review submitted for ${mentor.name}. Thank you!`;
+
+      reviewSessionSelect.value = "";
+      reviewRating.value = "";
+      reviewTitle.value = "";
+      reviewText.value = "";
+
+      render();
+      renderSessions();
+      renderReviewOptions();
+    }
+
+    categoryTabs.addEventListener("click", (e) => {
+      if(!e.target.classList.contains("cat-btn")) return;
+      document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+      e.target.classList.add("active");
+      category = e.target.dataset.category;
+      render();
+    });
+
+    searchInput.addEventListener("input", () => {
+      search = searchInput.value;
+      render();
+    });
+
+    sortSelect.addEventListener("change", () => {
+      sort = sortSelect.value;
+      render();
+    });
+
+    availabilitySelect.addEventListener("change", () => {
+      availability = availabilitySelect.value;
+      render();
+    });
+
+    clearBtn.addEventListener("click", () => {
+      category = "All";
+      search = "";
+      sort = "default";
+      availability = "all";
+
+      searchInput.value = "";
+      sortSelect.value = "default";
+      availabilitySelect.value = "all";
+      document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+      document.querySelector('.cat-btn[data-category="All"]').classList.add("active");
+      bookMessage.textContent = "Pick a mentor to book a session or view full profile details.";
+      reviewMsg.textContent = "";
+      render();
+    });
+
+    submitReviewBtn.addEventListener("click", submitReview);
+
+    closeModal.addEventListener("click", () => overlay.style.display = "none");
+    overlay.addEventListener("click", (e) => {
+      if(e.target === overlay) overlay.style.display = "none";
+    });
+
+    render();
+    renderSessions();
+    renderReviewOptions();
+  </script>
+</body>
+</html>

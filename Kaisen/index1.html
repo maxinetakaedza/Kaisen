@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LocalVault - Business Owner Dashboard</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            charcoal: {
+              800: '#2b303a',
+              900: '#1e2229',
+              950: '#13161c',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#fff0f4] text-charcoal-900 font-sans min-h-screen flex flex-col justify-between selection:bg-rose-200">
+
+  <header class="bg-charcoal-900 text-white shadow-lg sticky top-0 z-50 border-b border-charcoal-800">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-white/10 border border-white/20 rounded-xl flex items-center justify-center font-bold text-white text-xl shadow-inner backdrop-blur-md">
+          📊
+        </div>
+        <div>
+          <span class="text-xl font-extrabold tracking-tight block text-white">LocalVault</span>
+          <span class="text-[10px] text-rose-200/80 uppercase tracking-wider block font-semibold">Merchant Portal • Harare</span>
+        </div>
+      </div>
+
+      <nav class="flex items-center flex-wrap gap-1 bg-white/5 p-1.5 rounded-xl border border-white/10 backdrop-blur-md text-xs font-semibold">
+        <a href="index1.html" class="bg-white/20 text-white px-3 py-1.5 rounded-lg transition font-bold">🏪 Business Home</a>
+        <a href="Owner.html" class="text-slate-300 hover:text-white hover:bg-white/10 px-3 py-1.5 rounded-lg transition">👔 Owner</a>
+        <a href="Mentor.html" class="text-slate-300 hover:text-white hover:bg-white/10 px-3 py-1.5 rounded-lg transition">🎓 Mentor</a>
+        <a href="Delivery.html" class="text-slate-300 hover:text-white hover:bg-white/10 px-3 py-1.5 rounded-lg transition">🛵 Delivery</a>
+        <a href="design.html" class="text-slate-300 hover:text-white hover:bg-white/10 px-3 py-1.5 rounded-lg transition">🎨 Design</a>
+      </nav>
+
+      <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-2 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10 backdrop-blur-md">
+          <span class="text-[11px] text-slate-300 font-semibold hidden sm:inline">Branch:</span>
+          <select id="branch-select" onchange="updateDashboardData()" class="bg-charcoal-800 text-xs font-bold text-white focus:outline-none cursor-pointer rounded px-2 py-1 border border-white/20">
+            <option value="avondale">Cafe Nush (Avondale)</option>
+            <option value="village">Cafe Nush (Village)</option>
+          </select>
+        </div>
+        <div class="w-9 h-9 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-xs shadow-sm">
+          CN
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6 flex-1">
+
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-white/90 shadow-sm">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-700 bg-emerald-100/80 px-2.5 py-1 rounded">Verified Merchant</span>
+          <span id="active-branch-badge" class="text-[10px] uppercase font-bold tracking-wider text-charcoal-900 bg-rose-100 px-2.5 py-1 rounded">Avondale Branch</span>
+        </div>
+        <h1 id="merchant-heading" class="text-2xl font-extrabold text-charcoal-900 tracking-tight mt-1.5">Cafe Nush (Avondale) Financial Hub</h1>
+        <p class="text-xs text-slate-500 mt-0.5">Track your local revenue retention, active promotions, and customer reviews in real time.</p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-1.5 bg-rose-100/60 p-1.5 rounded-xl border border-rose-200/50 text-xs">
+        <button onclick="setPeriod('this-month', this)" class="period-btn bg-charcoal-900 text-white px-3 py-1.5 rounded-lg font-bold transition shadow-xs">This Month</button>
+        <button onclick="setPeriod('last-month', this)" class="period-btn text-charcoal-800 hover:text-slate-600 px-3 py-1.5 rounded-lg font-semibold transition">Last Month</button>
+        <button onclick="setPeriod('ytd', this)" class="period-btn text-charcoal-800 hover:text-slate-600 px-3 py-1.5 rounded-lg font-semibold transition">Year to Date</button>
+        <button onclick="setPeriod('last-year', this)" class="period-btn text-charcoal-800 hover:text-slate-600 px-3 py-1.5 rounded-lg font-semibold transition">Last Year</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+      <div class="bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-white/90 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-500">Total Revenue</span>
+          <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">💵 USD</span>
+        </div>
+        <p id="stat-revenue" class="text-2xl font-extrabold text-charcoal-900">$4,850.00</p>
+        <p id="stat-revenue-trend" class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+          <span>↑ 14.2%</span> <span class="text-slate-400 font-normal">vs previous period</span>
+        </p>
+      </div>
+
+      <div class="bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-white/90 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-500">Offer Redemptions</span>
+          <span class="text-xs bg-rose-100 text-charcoal-800 font-bold px-2 py-0.5 rounded">🏷️ Promos</span>
+        </div>
+        <p id="stat-redemptions" class="text-2xl font-extrabold text-charcoal-900">142 Deals</p>
+        <p id="stat-top-deal" class="text-[11px] text-slate-600 font-semibold flex items-center gap-1">
+          <span class="text-slate-400 font-normal">top deal: 10% Cappuccino</span>
+        </p>
+      </div>
+
+      <div class="bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-white/90 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-500">Local Capital Retained</span>
+          <span class="text-xs bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded">🌱 Impact</span>
+        </div>
+        <p id="stat-impact" class="text-2xl font-extrabold text-charcoal-900">$3,620.00</p>
+        <p id="stat-impact-sub" class="text-[11px] text-slate-500 font-medium">Circulated in local community</p>
+      </div>
+
+      <div class="bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-white/90 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-500">Customer Score</span>
+          <span id="stat-score-badge" class="text-xs bg-amber-500 text-white font-bold px-2 py-0.5 rounded">★ 4.8 / 5</span>
+        </div>
+        <p id="stat-reviews-count" class="text-2xl font-extrabold text-charcoal-900">48 Reviews</p>
+        <p id="stat-positive-percent" class="text-[11px] text-emerald-600 font-semibold">96% positive feedback</p>
+      </div>
+
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <section class="lg:col-span-7 space-y-6">
+
+        <div class="bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-white/90 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 id="chart-heading" class="text-lg font-extrabold text-charcoal-900">Revenue Breakdown (This Month)</h2>
+              <p class="text-xs text-slate-500">Category distribution of sales tracked via LocalVault.</p>
+            </div>
+            <button onclick="alert('Exporting CSV Financial Report for ' + currentPeriod + '...')" class="bg-rose-100 hover:bg-rose-200 text-charcoal-900 text-xs px-3 py-1.5 rounded-lg font-bold transition">
+              📥 Export CSV
+            </button>
+          </div>
+
+          <div class="pt-4 pb-2 space-y-4">
+            <div>
+              <div class="flex justify-between text-xs font-bold mb-1">
+                <span id="bar-label-1" class="text-charcoal-900">Coffee & Breakfast Beverages</span>
+                <span id="bar-val-1" class="text-slate-500">$1,890 (40%)</span>
+              </div>
+              <div class="w-full bg-rose-100/60 rounded-full h-3.5 overflow-hidden">
+                <div id="bar-width-1" class="bg-emerald-600 h-full rounded-full transition-all duration-500" style="width: 40%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-bold mb-1">
+                <span id="bar-label-2" class="text-charcoal-900">Artisan Bakery & Pastries</span>
+                <span id="bar-val-2" class="text-slate-500">$1,420 (30%)</span>
+              </div>
+              <div class="w-full bg-rose-100/60 rounded-full h-3.5 overflow-hidden">
+                <div id="bar-width-2" class="bg-charcoal-800 h-full rounded-full transition-all duration-500" style="width: 30%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-bold mb-1">
+                <span id="bar-label-3" class="text-charcoal-900">Lunch Combos & Gourmet Pizzas</span>
+                <span id="bar-val-3" class="text-slate-500">$1,540 (30%)</span>
+              </div>
+              <div class="w-full bg-rose-100/60 rounded-full h-3.5 overflow-hidden">
+                <div id="bar-width-3" class="bg-slate-500 h-full rounded-full transition-all duration-500" style="width: 30%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-white/90 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-extrabold text-charcoal-900">Active Special Offers</h2>
+              <p class="text-xs text-slate-500">Manage deals visible on your directory listing.</p>
+            </div>
+            <button onclick="alert('Create New Promotion Modal')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3.5 py-2 rounded-xl font-bold transition shadow-xs">
+              + New Offer
+            </button>
+          </div>
+
+          <div class="space-y-3">
+            <div class="p-4 rounded-xl border border-slate-200/60 bg-white/60 flex items-center justify-between gap-2">
+              <div class="space-y-0.5">
+                <span class="text-[10px] font-bold bg-emerald-600 text-white px-2 py-0.5 rounded">ACTIVE</span>
+                <h3 id="deal-title-1" class="text-xs font-bold text-charcoal-900 mt-1">10% off cappuccino & pastry combo</h3>
+                <p id="deal-stats-1" class="text-[11px] text-slate-500">Redeemed 94 times in selected period</p>
+              </div>
+              <button onclick="alert('Editing promotion settings')" class="text-xs font-bold text-charcoal-800 hover:underline">Edit Deal</button>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-200/60 bg-white/60 flex items-center justify-between gap-2">
+              <div class="space-y-0.5">
+                <span class="text-[10px] font-bold bg-amber-500 text-white px-2 py-0.5 rounded">STUDENT SPECIAL</span>
+                <h3 id="deal-title-2" class="text-xs font-bold text-charcoal-900 mt-1">Free Wi-Fi Pass with any Large Meal</h3>
+                <p id="deal-stats-2" class="text-[11px] text-slate-500">Redeemed 48 times in selected period</p>
+              </div>
+              <button onclick="alert('Editing promotion settings')" class="text-xs font-bold text-charcoal-800 hover:underline">Edit Deal</button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="lg:col-span-5 space-y-6">
+
+        <div class="bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-white/90 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-extrabold text-charcoal-900">Branch Customer Feedback</h2>
+              <p class="text-xs text-slate-500">Real reviews submitted by local shoppers.</p>
+            </div>
+            <span id="branch-rating-tag" class="text-xs bg-amber-100 text-amber-900 font-bold px-2.5 py-1 rounded-lg">4.8 Rating</span>
+          </div>
+
+          <div class="flex gap-2 text-xs border-b border-slate-200 pb-2">
+            <button onclick="filterFeedback('all', this)" class="feedback-tab text-charcoal-900 font-bold border-b-2 border-charcoal-900 pb-1">All Reviews</button>
+            <button onclick="filterFeedback('positive', this)" class="feedback-tab text-slate-500 hover:text-charcoal-900 font-medium pb-1">Positive</button>
+            <button onclick="filterFeedback('needs-reply', this)" class="feedback-tab text-slate-500 hover:text-charcoal-900 font-medium pb-1">Needs Reply</button>
+          </div>
+
+          <div id="reviews-container" class="space-y-4 max-h-[460px] overflow-y-auto pr-1">
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <div id="reply-modal" class="fixed inset-0 bg-charcoal-950/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 border border-white/80 shadow-2xl">
+      <div class="flex justify-between items-center">
+        <h3 id="reply-modal-title" class="text-base font-extrabold text-charcoal-900">Reply to Customer</h3>
+        <button onclick="closeReplyModal()" class="text-slate-400 hover:text-charcoal-900 font-bold">✕</button>
+      </div>
+      <textarea placeholder="Write your public response as Cafe Nush management..." class="w-full bg-[#fff0f4]/50 border border-slate-200 rounded-xl p-3 text-xs text-charcoal-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 h-28"></textarea>
+      <div class="flex gap-2">
+        <button onclick="sendReply()" class="flex-1 bg-emerald-600 text-white py-2 rounded-xl text-xs font-bold hover:bg-emerald-700 transition">
+          Send Response
+        </button>
+        <button onclick="closeReplyModal()" class="px-4 py-2 bg-rose-100 text-charcoal-900 rounded-xl text-xs font-bold hover:bg-rose-200 transition">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-charcoal-900 text-slate-400 text-xs py-5 border-t border-charcoal-800 mt-12">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <p class="font-medium text-slate-300">LocalVault Merchant Dashboard • Local Economic Development Platform</p>
+    </div>
+  </footer>
+
+  <script>
+    // DATA MATRIX FOR BRANCHES AND DATE RANGES
+    const dashboardData = {
+      avondale: {
+        name: "Cafe Nush (Avondale)",
+        badge: "Avondale Branch",
+        periods: {
+          'this-month': {
+            revenue: "$4,850.00",
+            trend: "↑ 14.2% vs last month",
+            redemptions: "142 Deals",
+            topDeal: "10% Cappuccino",
+            impact: "$3,620.00",
+            score: "★ 4.8 / 5",
+            reviewsCount: "48 Reviews",
+            positivePercent: "96% positive feedback",
+            chartTitle: "Revenue Breakdown (This Month)",
+            bars: [
+              { label: "Coffee & Breakfast Beverages", val: "$1,890 (40%)", width: "40%" },
+              { label: "Artisan Bakery & Pastries", val: "$1,420 (30%)", width: "30%" },
+              { label: "Lunch Combos & Gourmet Pizzas", val: "$1,540 (30%)", width: "30%" }
+            ],
+            deal1Count: "94 times this month",
+            deal2Count: "48 times this month"
+          },
+          'last-month': {
+            revenue: "$4,240.00",
+            trend: "↑ 6.1% vs prior month",
+            redemptions: "128 Deals",
+            topDeal: "10% Cappuccino",
+            impact: "$3,180.00",
+            score: "★ 4.7 / 5",
+            reviewsCount: "41 Reviews",
+            positivePercent: "94% positive feedback",
+            chartTitle: "Revenue Breakdown (Last Month)",
+            bars: [
+              { label: "Coffee & Breakfast Beverages", val: "$1,680 (40%)", width: "40%" },
+              { label: "Artisan Bakery & Pastries", val: "$1,260 (30%)", width: "30%" },
+              { label: "Lunch Combos & Gourmet Pizzas", val: "$1,300 (30%)", width: "30%" }
+            ],
+            deal1Count: "82 times last month",
+            deal2Count: "46 times last month"
+          },
+          'ytd': {
+            revenue: "$32,100.00",
+            trend: "↑ 18.5% year-to-date",
+            redemptions: "980 Deals",
+            topDeal: "10% Cappuccino",
+            impact: "$24,000.00",
+            score: "★ 4.8 / 5",
+            reviewsCount: "290 Reviews",
+            positivePercent: "96% positive feedback",
+            chartTitle: "Revenue Breakdown (Year to Date)",
+            bars: [
+              { label: "Coffee & Breakfast Beverages", val: "$12,840 (40%)", width: "40%" },
+              { label: "Artisan Bakery & Pastries", val: "$9,630 (30%)", width: "30%" },
+              { label: "Lunch Combos & Gourmet Pizzas", val: "$9,630 (30%)", width: "30%" }
+            ],
+            deal1Count: "640 times YTD",
+            deal2Count: "340 times YTD"
+          },
+          'last-year': {
+            revenue: "$46,800.00",
+            trend: "Full Year 2025 Totals",
+            redemptions: "1,450 Deals",
+            topDeal: "10% Cappuccino",
+            impact: "$35,100.00",
+            score: "★ 4.6 / 5",
+            reviewsCount: "410 Reviews",
+            positivePercent: "92% positive feedback",
+            chartTitle: "Revenue Breakdown (Full Year 2025)",
+            bars: [
+              { label: "Coffee & Breakfast Beverages", val: "$18,720 (40%)", width: "40%" },
+              { label: "Artisan Bakery & Pastries", val: "$14,040 (30%)", width: "30%" },
+              { label: "Lunch Combos & Gourmet Pizzas", val: "$14,040 (30%)", width: "30%" }
+            ],
+            deal1Count: "950 times last year",
+            deal2Count: "500 times last year"
+          }
+        },
+        reviews: [
+          { name: "Tinashe M.", time: "Yesterday", rating: "5.0", text: "Great environment to study! The cappuccinos are fresh and the 10% LocalVault discount worked smoothly at the counter." },
+          { name: "Michelle K.", time: "3 days ago", rating: "4.0", text: "Love the pastry selection in Avondale. The outdoor seating gets a bit crowded around lunch time, but overall great service!" },
+          { name: "Rufaro Z.", time: "5 days ago", rating: "5.0", text: "Best coffee in Avondale Shopping Centre. Staff is super friendly and Wi-Fi speed is fast for remote work." }
+        ]
+      },
+      village: {
+        name: "Cafe Nush (Sam Levy's Village)",
+        badge: "Village Branch",
+        periods: {
+          'this-month': {
+            revenue: "$6,120.00",
+            trend: "↑ 21.0% vs last month",
+            redemptions: "185 Deals",
+            topDeal: "Free Wi-Fi Pass",
+            impact: "$4,590.00",
+            score: "★ 4.9 / 5",
+            reviewsCount: "62 Reviews",
+            positivePercent: "98% positive feedback",
+            chartTitle: "Revenue Breakdown (This Month)",
+            bars: [
+              { label: "Gourmet Dinner & Wine Combos", val: "$2,815 (46%)", width: "46%" },
+              { label: "Coffee & Artisan Bakery", val: "$1,836 (30%)", width: "30%" },
+              { label: "Takeaway & Outdoor Seating", val: "$1,469 (24%)", width: "24%" }
+            ],
+            deal1Count: "110 times this month",
+            deal2Count: "75 times this month"
+          },
+          'last-month': {
+            revenue: "$5,050.00",
+            trend: "↑ 10.2% vs prior month",
+            redemptions: "150 Deals",
+            topDeal: "Free Wi-Fi Pass",
+            impact: "$3,780.00",
+            score: "★ 4.8 / 5",
+            reviewsCount: "54 Reviews",
+            positivePercent: "96% positive feedback",
+            chartTitle: "Revenue Breakdown (Last Month)",
+            bars: [
+              { label: "Gourmet Dinner & Wine Combos", val: "$2,323 (46%)", width: "46%" },
+              { label: "Coffee & Artisan Bakery", val: "$1,515 (30%)", width: "30%" },
+              { label: "Takeaway & Outdoor Seating", val: "$1,212 (24%)", width: "24%" }
+            ],
+            deal1Count: "90 times last month",
+            deal2Count: "60 times last month"
+          },
+          'ytd': {
+            revenue: "$41,500.00",
+            trend: "↑ 24.1% year-to-date",
+            redemptions: "1,220 Deals",
+            topDeal: "Free Wi-Fi Pass",
+            impact: "$31,100.00",
+            score: "★ 4.9 / 5",
+            reviewsCount: "380 Reviews",
+            positivePercent: "98% positive feedback",
+            chartTitle: "Revenue Breakdown (Year to Date)",
+            bars: [
+              { label: "Gourmet Dinner & Wine Combos", val: "$19,090 (46%)", width: "46%" },
+              { label: "Coffee & Artisan Bakery", val: "$12,450 (30%)", width: "30%" },
+              { label: "Takeaway & Outdoor Seating", val: "$9,960 (24%)", width: "24%" }
+            ],
+            deal1Count: "750 times YTD",
+            deal2Count: "470 times YTD"
+          },
+          'last-year': {
+            revenue: "$58,400.00",
+            trend: "Full Year 2025 Totals",
+            redemptions: "1,780 Deals",
+            topDeal: "Free Wi-Fi Pass",
+            impact: "$43,800.00",
+            score: "★ 4.7 / 5",
+            reviewsCount: "510 Reviews",
+            positivePercent: "95% positive feedback",
+            chartTitle: "Revenue Breakdown (Full Year 2025)",
+            bars: [
+              { label: "Gourmet Dinner & Wine Combos", val: "$26,864 (46%)", width: "46%" },
+              { label: "Coffee & Artisan Bakery", val: "$17,520 (30%)", width: "30%" },
+              { label: "Takeaway & Outdoor Seating", val: "$14,016 (24%)", width: "24%" }
+            ],
+            deal1Count: "1,100 times last year",
+            deal2Count: "680 times last year"
+          }
+        },
+        reviews: [
+          { name: "Kudzai C.", time: "4 hours ago", rating: "5.0", text: "The Village location is vibrant! Quick coffee service and super easy voucher verification." },
+          { name: "Samantha P.", time: "2 days ago", rating: "5.0", text: "Great place for evening meetings. Wonderful atmosphere and very attentive staff." }
+        ]
+      }
+    };
+
+    let currentPeriod = 'this-month';
+
+    function setPeriod(period, btn) {
+      currentPeriod = period;
+      document.querySelectorAll('.period-btn').forEach(b => {
+        b.className = "period-btn text-charcoal-800 hover:text-slate-600 px-3 py-1.5 rounded-lg font-semibold transition";
+      });
+      btn.className = "period-btn bg-charcoal-900 text-white px-3 py-1.5 rounded-lg font-bold transition shadow-xs";
+      
+      updateDashboardData();
+    }
+
+    function updateDashboardData() {
+      const branchKey = document.getElementById('branch-select').value;
+      const branchObj = dashboardData[branchKey];
+      const periodData = branchObj.periods[currentPeriod];
+
+      // Update Titles & Badges
+      document.getElementById('active-branch-badge').innerText = branchObj.badge;
+      document.getElementById('merchant-heading').innerText = branchObj.name + " Financial Hub";
+
+      // Update Stat Cards
+      document.getElementById('stat-revenue').innerText = periodData.revenue;
+      document.getElementById('stat-revenue-trend').innerHTML = `<span>${periodData.trend}</span>`;
+      document.getElementById('stat-redemptions').innerText = periodData.redemptions;
+      document.getElementById('stat-top-deal').innerHTML = `<span class="text-slate-400 font-normal">top deal: ${periodData.topDeal}</span>`;
+      document.getElementById('stat-impact').innerText = periodData.impact;
+      document.getElementById('stat-score-badge').innerText = periodData.score;
+      document.getElementById('stat-reviews-count').innerText = periodData.reviewsCount;
+      document.getElementById('stat-positive-percent').innerText = periodData.positivePercent;
+
+      // Update Chart
+      document.getElementById('chart-heading').innerText = periodData.chartTitle;
+      document.getElementById('bar-label-1').innerText = periodData.bars[0].label;
+      document.getElementById('bar-val-1').innerText = periodData.bars[0].val;
+      document.getElementById('bar-width-1').style.width = periodData.bars[0].width;
+
+      document.getElementById('bar-label-2').innerText = periodData.bars[1].label;
+      document.getElementById('bar-val-2').innerText = periodData.bars[1].val;
+      document.getElementById('bar-width-2').style.width = periodData.bars[1].width;
+
+      document.getElementById('bar-label-3').innerText = periodData.bars[2].label;
+      document.getElementById('bar-val-3').innerText = periodData.bars[2].val;
+      document.getElementById('bar-width-3').style.width = periodData.bars[2].width;
+
+      // Update Deals Stats
+      document.getElementById('deal-stats-1').innerText = "Redeemed " + periodData.deal1Count;
+      document.getElementById('deal-stats-2').innerText = "Redeemed " + periodData.deal2Count;
+
+      // Render Reviews
+      renderReviews(branchObj.reviews);
+    }
+
+    function renderReviews(reviewsList) {
+      const container = document.getElementById('reviews-container');
+      container.innerHTML = '';
+
+      reviewsList.forEach(rev => {
+        const reviewHTML = `
+          <div class="p-4 rounded-xl bg-white/60 border border-slate-200/60 space-y-2">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <div class="w-7 h-7 bg-charcoal-900 text-white rounded-full flex items-center justify-center font-bold text-xs">${rev.name.charAt(0)}</div>
+                <div>
+                  <h4 class="text-xs font-bold text-charcoal-900">${rev.name}</h4>
+                  <span class="text-[10px] text-slate-400">${rev.time} • Verified Customer</span>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-charcoal-900 bg-amber-100/80 px-2 py-0.5 rounded border border-amber-200">★ ${rev.rating}</span>
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed">"${rev.text}"</p>
+            <div class="pt-2 flex justify-end">
+              <button onclick="replyModal('${rev.name}')" class="text-[11px] font-bold text-emerald-700 hover:underline">💬 Reply to ${rev.name.split(' ')[0]}</button>
+            </div>
+          </div>
+        `;
+        container.innerHTML += reviewHTML;
+      });
+    }
+
+    function filterFeedback(tab, btn) {
+      document.querySelectorAll('.feedback-tab').forEach(b => {
+        b.className = "feedback-tab text-slate-500 hover:text-charcoal-900 font-medium pb-1";
+      });
+      btn.className = "feedback-tab text-charcoal-900 font-bold border-b-2 border-charcoal-900 pb-1";
+    }
+
+    function replyModal(customerName) {
+      document.getElementById('reply-modal-title').innerText = "Reply to " + customerName;
+      document.getElementById('reply-modal').classList.remove('hidden');
+    }
+
+    function closeReplyModal() {
+      document.getElementById('reply-modal').classList.add('hidden');
+    }
+
+    function sendReply() {
+      alert('Your response has been published to the customer review thread!');
+      closeReplyModal();
+    }
+
+    // Initialize Dashboard Data on Load
+    window.onload = function() {
+      updateDashboardData();
+    };
+  </script>
+
+</body>
+</html>

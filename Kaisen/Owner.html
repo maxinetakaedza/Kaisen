@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Owner Dashboard | LocalConnect</title>
+  <style>
+    :root{--c1:#F1DEDE;--c2:#BBACC1;--c3:#80727B;--c4:#909580;--c5:#545643;}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,Tahoma,sans-serif;}
+    body{background:linear-gradient(135deg,var(--c1),#f8f3fa);color:var(--c5);min-height:100vh;}
+    
+    /* TOP HEADER & NAVBAR */
+    .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:14px 18px;
+      background:#ffffffd8;
+      border-bottom:1px solid var(--c2);
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--c5);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(187, 172, 193, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--c5);
+      color: #ffffff;
+    }
+
+    .wrap{max-width:1000px;margin:16px auto;padding:0 14px;display:grid;gap:12px;}
+    .hero{
+      border:1px solid var(--c2);border-radius:14px;overflow:hidden;background:#fff;
+      display:grid;grid-template-columns:1fr 1fr;
+    }
+    .hero img{width:100%;height:220px;object-fit:cover;}
+    .hero .txt{padding:14px;display:grid;align-content:center;gap:7px;}
+    .panel{background:#ffffffdd;border:1px solid var(--c2);border-radius:14px;padding:14px;}
+    .row{display:flex;gap:8px;flex-wrap:wrap;}
+    select,button{padding:10px;border-radius:10px;border:1px solid var(--c2);}
+    button{border:none;font-weight:700;cursor:pointer;background:var(--c5);color:#fff;}
+    ul{list-style:none;display:grid;gap:8px;margin-top:10px;}
+    li{background:#fff;border:1px solid var(--c2);border-radius:10px;padding:9px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+    .pill{background:var(--c4);color:#fff;padding:4px 8px;border-radius:999px;font-size:.75rem;font-weight:700;}
+    .result{margin-top:10px;background:#fff;border:1px dashed var(--c2);border-radius:10px;padding:10px;}
+    @media (max-width:850px){.hero{grid-template-columns:1fr;}.hero img{height:190px;}}
+  </style>
+</head>
+<body>
+
+  <header class="top">
+    <strong>🏪 Owner Dashboard</strong>
+
+    <nav class="nav-links">
+      <a href="index1.html">🏪 Business Home</a>
+      <a href="Owner.html" class="active">👔 Owner</a>
+      <a href="Mentor.html">🎓 Mentor</a>
+      <a href="Delivery.html">🛵 Delivery</a>
+      <a href="design.html">🎨 Design</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="txt">
+        <h2>Manage store deliveries efficiently 📊</h2>
+        <p style="color:var(--c3)">Assign riders, monitor statuses, and keep operations moving.</p>
+      </div>
+      <img src="https://images.unsplash.com/photo-1556155092-490a1ba16284?auto=format&fit=crop&w=1200&q=80" alt="Business owner managing logistics">
+    </section>
+
+    <section class="panel">
+      <h3>Assign Delivery Person</h3>
+      <p style="color:var(--c3);margin:6px 0 10px;">Select order and rider</p>
+
+      <div class="row">
+        <select id="orderSelect"></select>
+        <select id="riderSelect">
+          <option>Rider Mia</option>
+          <option>Rider Jay</option>
+          <option>Rider Leo</option>
+        </select>
+        <button id="assignBtn">Assign</button>
+      </div>
+
+      <ul id="orderList"></ul>
+      <div id="msg" class="result">No action yet.</div>
+    </section>
+  </main>
+
+  <script>
+    const defaultOrders = [
+      {id:"LC1021",status:"en_route",dropoff:"14 Palm Street",eta:18,assignedTo:"Rider Mia"},
+      {id:"LC1022",status:"placed",dropoff:"88 King Road",eta:25,assignedTo:"Unassigned"},
+      {id:"LC1023",status:"placed",dropoff:"7 Lake View Close",eta:30,assignedTo:"Unassigned"}
+    ];
+    const orders = JSON.parse(localStorage.getItem("lc_orders")) || defaultOrders;
+
+    const orderSelect = document.getElementById("orderSelect");
+    const riderSelect = document.getElementById("riderSelect");
+    const assignBtn = document.getElementById("assignBtn");
+    const orderList = document.getElementById("orderList");
+    const msg = document.getElementById("msg");
+
+    function save(){ localStorage.setItem("lc_orders", JSON.stringify(orders)); }
+
+    function render(){
+      orderSelect.innerHTML = "";
+      orderList.innerHTML = "";
+      orders.forEach(o => {
+        const op = document.createElement("option");
+        op.value = o.id;
+        op.textContent = `${o.id} • ${o.status.replace("_"," ")}`;
+        orderSelect.appendChild(op);
+
+        const li = document.createElement("li");
+        li.innerHTML = `<span><strong>${o.id}</strong> → ${o.dropoff}</span><span class="pill">${o.assignedTo}</span>`;
+        orderList.appendChild(li);
+      });
+      save();
+    }
+
+    assignBtn.addEventListener("click", () => {
+      const id = orderSelect.value;
+      const rider = riderSelect.value;
+      const order = orders.find(x => x.id === id);
+      if(!order) return;
+      order.assignedTo = rider;
+      if(order.status === "placed") order.status = "en_route";
+      msg.innerHTML = `<strong>${id}</strong> assigned to <strong>${rider}</strong>.`;
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

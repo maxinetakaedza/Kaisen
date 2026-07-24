@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delivery Person Dashboard | LocalConnect</title>
+  <style>
+    :root{--c1:#F1DEDE;--c2:#BBACC1;--c3:#80727B;--c4:#909580;--c5:#545643;}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,Tahoma,sans-serif;}
+    body{background:linear-gradient(135deg,var(--c1),#f8f3fa);color:var(--c5);min-height:100vh;}
+    
+    /* TOP HEADER & NAVIGATION */
+    .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:14px 18px;
+      background:#ffffffd8;
+      border-bottom:1px solid var(--c2);
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--c5);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(187, 172, 193, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--c5);
+      color: #ffffff;
+    }
+
+    .wrap{max-width:1000px;margin:16px auto;padding:0 14px;display:grid;gap:12px;}
+    .hero{
+      border:1px solid var(--c2);border-radius:14px;overflow:hidden;background:#fff;
+      display:grid;grid-template-columns:1fr 1fr;
+    }
+    .hero img{width:100%;height:220px;object-fit:cover;}
+    .hero .txt{padding:14px;display:grid;align-content:center;gap:7px;}
+    .panel{background:#ffffffdd;border:1px solid var(--c2);border-radius:14px;padding:14px;}
+    .row{display:flex;gap:8px;flex-wrap:wrap;}
+    input,button{padding:10px;border-radius:10px;border:1px solid var(--c2);}
+    input{flex:1;min-width:200px;}
+    button{border:none;font-weight:700;cursor:pointer;background:var(--c5);color:#fff;}
+    ul{list-style:none;display:grid;gap:8px;margin-top:10px;}
+    li{background:#fff;border:1px solid var(--c2);border-radius:10px;padding:9px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;cursor:pointer;}
+    li.active{border-color:var(--c5);background:#fff9fa;}
+    .pill{background:var(--c4);color:#fff;padding:4px 8px;border-radius:999px;font-size:.75rem;font-weight:700;}
+    .result{margin-top:10px;background:#fff;border:1px dashed var(--c2);border-radius:10px;padding:10px;}
+    @media (max-width:850px){.hero{grid-template-columns:1fr;}.hero img{height:190px;}}
+  </style>
+</head>
+<body>
+
+  <header class="top">
+    <strong>🛵 Delivery Dashboard</strong>
+
+    <nav class="nav-links">
+      <a href="index1.html">🏪 Business Home</a>
+      <a href="Owner.html">👔 Owner</a>
+      <a href="Mentor.html">🎓 Mentor</a>
+      <a href="Delivery.html" class="active">🛵 Delivery</a>
+      <a href="design.html">🎨 Design</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="txt">
+        <h2>Active Deliveries & Dispatch 🛵</h2>
+        <p style="color:var(--c3)">View assigned orders, accept jobs, and update drop-off statuses in real-time.</p>
+      </div>
+      <img src="https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&w=1200&q=80" alt="Delivery driver on motor scooter">
+    </section>
+
+    <section class="panel">
+      <h3>Order Management</h3>
+      <p style="color:var(--c3);margin:6px 0 10px;">Search or select an order to update its status.</p>
+
+      <div class="row">
+        <input id="searchInput" type="text" placeholder="Search by Order ID, area, or drop-off address..." />
+        <button id="searchBtn">Search</button>
+      </div>
+
+      <div class="row" style="margin-top:10px;">
+        <button id="acceptBtn" style="background:var(--c4);">Accept Order</button>
+        <button id="deliverBtn">Mark Delivered</button>
+      </div>
+
+      <ul id="orderList"></ul>
+      <div id="msg" class="result">Select an order from the list above.</div>
+    </section>
+  </main>
+
+  <script>
+    const defaultOrders = [
+      {id:"LC1021",status:"en_route",area:"Avondale",dropoff:"14 Palm Street",eta:18,assignedTo:"Rider Mia"},
+      {id:"LC1022",status:"placed",area:"Milton Park",dropoff:"88 King Road",eta:25,assignedTo:"Unassigned"},
+      {id:"LC1023",status:"placed",area:"Belgravia",dropoff:"7 Lake View Close",eta:30,assignedTo:"Unassigned"}
+    ];
+
+    const orders = JSON.parse(localStorage.getItem("lc_orders")) || defaultOrders;
+    let selectedId = null;
+    let currentList = [...orders];
+
+    const searchInput = document.getElementById("searchInput");
+    const searchBtn = document.getElementById("searchBtn");
+    const acceptBtn = document.getElementById("acceptBtn");
+    const deliverBtn = document.getElementById("deliverBtn");
+    const orderList = document.getElementById("orderList");
+    const msg = document.getElementById("msg");
+
+    function save(){ localStorage.setItem("lc_orders", JSON.stringify(orders)); }
+
+    function render(listData){
+      const list = listData || orders;
+      orderList.innerHTML = "";
+
+      if(!list.length){
+        orderList.innerHTML = `<li style="cursor:default;">No orders found matching your search.</li>`;
+        return;
+      }
+
+      list.forEach(o => {
+        const li = document.createElement("li");
+        if(o.id === selectedId) li.classList.add("active");
+        li.innerHTML = `<span><strong>${o.id}</strong> • ${o.area || ""} • ${o.dropoff}</span><span class="pill">${o.status.replace("_"," ")}</span>`;
+        li.onclick = () => { selectedId = o.id; render(currentList); };
+        orderList.appendChild(li);
+      });
+    }
+
+    searchBtn.addEventListener("click", () => {
+      const q = searchInput.value.trim().toLowerCase();
+      if(!q){ currentList = [...orders]; render(currentList); return; }
+      currentList = orders.filter(o =>
+        o.id.toLowerCase().includes(q) ||
+        (o.area || "").toLowerCase().includes(q) ||
+        o.dropoff.toLowerCase().includes(q)
+      );
+      render(currentList);
+    });
+
+    acceptBtn.addEventListener("click", () => {
+      if(!selectedId){ msg.textContent = "Select an order first."; return; }
+      const o = orders.find(x => x.id === selectedId);
+      if(!o) return;
+      o.status = "en_route";
+      if(o.assignedTo === "Unassigned") o.assignedTo = "You (Current Rider)";
+      msg.innerHTML = `<strong>${o.id}</strong> accepted.`;
+      save(); render(currentList);
+    });
+
+    deliverBtn.addEventListener("click", () => {
+      if(!selectedId){ msg.textContent = "Select an order first."; return; }
+      const o = orders.find(x => x.id === selectedId);
+      if(!o) return;
+      o.status = "delivered";
+      msg.innerHTML = `<strong>${o.id}</strong> marked as delivered! 🎉`;
+      save(); render(currentList);
+    });
+
+    render(currentList);
+  </script>
+</body>
+</html>

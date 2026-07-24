@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avondale Community Portal — Rewards & Careers</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================
+       PASTEL PINK & AVONDALE PALETTE
+       ========================================================= */
+    :root {
+      --bg-pastel: #f9ecec;
+      --bg-pastel-gradient: linear-gradient(135deg, #fceeee 0%, #f3dede 50%, #ebd7db 100%);
+      --soft-blush: #f1dede;
+      --lilac-ash: #bbacc1;
+      --rosy-granite: #80727b;
+      --gray-olive: #909580;
+      --ebony: #383a2e;
+      --text-dark: #23251d;
+      --text-muted: #625c66;
+
+      --card-bg: rgba(255, 255, 255, 0.75);
+      --glass-border: rgba(187, 172, 193, 0.4);
+      --card-shadow: 0 10px 30px rgba(128, 114, 123, 0.08);
+
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-pastel-gradient);
+      color: var(--text-dark);
+      overflow-x: hidden;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    /* BACKGROUND PARTICLES */
+    #particles-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* HEADER BAR */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(252, 238, 238, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 16px 24px;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand-title h1 { 
+      font-size: 20px; 
+      font-weight: 800; 
+      color: var(--ebony); 
+      letter-spacing: -0.02em; 
+    }
+    .brand-title p { 
+      font-size: 12px; 
+      color: var(--text-muted); 
+      font-family: var(--font-mono); 
+      font-weight: 600;
+    }
+
+    /* NAVBAR LINKS STYLING */
+    .navbar {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .navbar a {
+      text-decoration: none;
+      color: var(--ebony);
+      font-weight: 700;
+      font-size: 14px;
+      transition: color 0.2s ease;
+    }
+
+    .navbar a:hover {
+      color: var(--text-muted);
+    }
+
+    .navbar a.active {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* STATS PILLS */
+    .user-stats {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat-pill {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid var(--glass-border);
+      padding: 8px 16px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ebony);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+
+    .stat-pill.points { color: #d97706; border-color: rgba(217, 119, 6, 0.3); background: #fffcf5; }
+    .stat-pill.streak { color: #e11d48; border-color: rgba(225, 29, 72, 0.3); background: #fff5f5; }
+
+    /* MAIN CONTENT */
+    main {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 36px auto;
+      padding: 0 24px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin: 32px 0 28px;
+    }
+
+    .section-header h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--ebony);
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    /* TABS NAVIGATION */
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid var(--glass-border);
+      color: var(--text-dark);
+      padding: 12px 28px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: var(--card-shadow);
+    }
+
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--ebony);
+      color: #ffffff;
+      border-color: var(--ebony);
+      box-shadow: 0 8px 20px rgba(56, 58, 46, 0.25);
+    }
+
+    /* OFFERS & JOBS GRID */
+    .offers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 28px;
+    }
+
+    .offer-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 24px;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--card-shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .offer-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(128, 114, 123, 0.15);
+    }
+
+    .card-image {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--glass-border);
+      color: var(--ebony);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .card-badge.job-badge {
+      background: var(--ebony);
+      color: #ffffff;
+    }
+
+    .card-content {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .card-title h3 { font-size: 18px; font-weight: 700; color: var(--ebony); }
+    .card-title p { font-size: 13px; color: var(--text-muted); margin-top: 6px; line-height: 1.45; }
+
+    .cost-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: #b45309;
+      background: #fef3c7;
+      border: 1px solid rgba(217, 119, 6, 0.2);
+      padding: 3px 10px;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
+    .job-meta-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ebony);
+      background: rgba(187, 172, 193, 0.25);
+      border: 1px solid var(--glass-border);
+      padding: 4px 10px;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
+    .availability-bar {
+      margin-top: 8px;
+    }
+
+    .availability-text {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .bar-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(187, 172, 193, 0.3);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--ebony);
+    }
+
+    .btn-claim {
+      background: var(--ebony);
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 14px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(56, 58, 46, 0.15);
+    }
+
+    .btn-claim:hover {
+      background: #23251d;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(56, 58, 46, 0.25);
+    }
+
+    /* MODAL WINDOWS */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(56, 58, 46, 0.4);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      padding: 32px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 24px 60px rgba(80, 70, 75, 0.2);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-box h3 { font-size: 20px; margin-bottom: 8px; color: var(--ebony); font-weight: 800; }
+    .modal-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .input-group label {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--ebony);
+      margin-bottom: -4px;
+    }
+
+    .phone-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .country-select {
+      background: #f8f6f6;
+      border: 1px solid var(--glass-border);
+      padding: 12px 10px;
+      border-radius: 12px;
+      color: var(--text-dark);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+      width: 125px;
+    }
+
+    .input-field {
+      background: #f8f6f6;
+      border: 1px solid var(--glass-border);
+      padding: 12px 16px;
+      border-radius: 12px;
+      color: var(--text-dark);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+    }
+
+    textarea.input-field {
+      resize: vertical;
+      min-height: 90px;
+      font-family: var(--font-sans);
+    }
+
+    .input-field:focus, .country-select:focus { border-color: var(--ebony); background: #ffffff; }
+
+    .qr-container {
+      background: #f8f6f6;
+      padding: 20px;
+      border-radius: 20px;
+      display: inline-block;
+      margin: 16px 0;
+      border: 1px solid var(--glass-border);
+    }
+
+    .timer-badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: #e11d48;
+      margin-top: 8px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #f3dede;
+      border: none;
+      color: var(--ebony);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-btn:hover { background: var(--ebony); color: #ffffff; }
+  </style>
+</head>
+<body>
+
+  <canvas id="particles-canvas"></canvas>
+
+  <header>
+    <div class="nav-container">
+      <div class="brand-title">
+        <h1>Avondale Modern Hub</h1>
+        <p>Local Rewards & Career Portal</p>
+      </div>
+
+      <nav class="navbar">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="contact.html" class="active">Contact</a>
+      </nav>
+
+      <div class="user-stats">
+        <div class="stat-pill points">
+          <span>⚡</span>
+          <span id="user-points">1,250 PTS</span>
+        </div>
+        <div class="stat-pill streak">
+          <span>🔥</span>
+          <span>4-WK STREAK</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="section-header">
+      <h2>Welcome to Avondale</h2>
+      <p>Discover exclusive local perks or apply for internships, apprenticeships, and part-time jobs nearby.</p>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('offers')">🎁 Local Perks & Rewards</button>
+      <button class="tab-btn" onclick="switchTab('jobs')">💼 Jobs & Apprenticeships</button>
+    </div>
+
+    <div id="section-offers">
+      <div class="offers-grid">
+
+        <div class="offer-card">
+          <div style="position:relative;">
+            <img class="card-image" src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80" alt="Cafe Nush">
+            <span class="card-badge">10% OFF</span>
+          </div>
+          <div class="card-content">
+            <div class="card-title">
+              <h3>Cafe Nush Avondale</h3>
+              <p>Valid on artisan coffee, fresh pastries, and woodfired breakfasts.</p>
+              <span class="cost-tag">COST: 150 PTS</span>
+            </div>
+            <div class="availability-bar">
+              <div class="availability-text">
+                <span>Vouchers Remaining</span>
+                <span>12 / 50 Left</span>
+              </div>
+              <div class="bar-bg"><div class="bar-fill" style="width: 24%;"></div></div>
+            </div>
+            <button class="btn-claim" onclick="openAuthModal('Cafe Nush — 10% OFF Discount', 150)">CLAIM VOUCHER</button>
+          </div>
+        </div>
+
+        <div class="offer-card">
+          <div style="position:relative;">
+            <img class="card-image" src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=600&q=80" alt="Queen Makeda">
+            <span class="card-badge">BUY 1 GET 1</span>
+          </div>
+          <div class="card-content">
+            <div class="card-title">
+              <h3>Queen Makeda Ethiopian</h3>
+              <p>Buy any specialty platter and get a free homemade Ethiopian spiced tea.</p>
+              <span class="cost-tag">COST: 200 PTS</span>
+            </div>
+            <div class="availability-bar">
+              <div class="availability-text">
+                <span>Vouchers Remaining</span>
+                <span>28 / 50 Left</span>
+              </div>
+              <div class="bar-bg"><div class="bar-fill" style="width: 56%;"></div></div>
+            </div>
+            <button class="btn-claim" onclick="openAuthModal('Queen Makeda — Free Spiced Tea', 200)">CLAIM VOUCHER</button>
+          </div>
+        </div>
+
+        <div class="offer-card">
+          <div style="position:relative;">
+            <img class="card-image" src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=600&q=80" alt="Tech Repair">
+            <span class="card-badge">FREE CHECKUP</span>
+          </div>
+          <div class="card-content">
+            <div class="card-title">
+              <h3>Avondale Tech & Solar Repair</h3>
+              <p>Free device diagnostic check and cleaning service for laptops and phones.</p>
+              <span class="cost-tag">COST: 300 PTS</span>
+            </div>
+            <div class="availability-bar">
+              <div class="availability-text">
+                <span>Vouchers Remaining</span>
+                <span>5 / 20 Left</span>
+              </div>
+              <div class="bar-bg"><div class="bar-fill" style="width: 25%;"></div></div>
+            </div>
+            <button class="btn-claim" onclick="openAuthModal('Tech Repair — Free Checkup', 300)">CLAIM VOUCHER</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="section-jobs" style="display: none;">
+      <div class="offers-grid">
+
+        <div class="offer-card">
+          <div style="position:relative;">
+            <img class="card-image" src="https://images.unsplash.com/photo-1556742049-0a67dd3952f4?auto=format&fit=crop&w=600&q=80" alt="Barista Job">
+            <span class="card-badge job-badge">PART-TIME</span>
+          </div>
+          <div class="card-content">
+            <div class="card-title">
+              <h3>Junior Barista & Host</h3>
+              <p><strong>Cafe Nush Avondale</strong></p>
+              <p style="margin-top: 6px;">Learn professional espresso brewing and hospitality. Flexible afternoon & weekend shifts.</p>
+              <span class="job-meta-tag">⏱️ 15-20 hrs/wk • Avondale</span>
+            </div>
+            <button class="btn-claim" onclick="openJobModal('Junior Barista & Host', 'Cafe Nush Avondale')">APPLY NOW</button>
+          </div>
+        </div>
+
+        <div class="offer-card">
+          <div style="position:relative;">
+            <img class="card-image" src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80" alt="Solar Apprentice">
+            <span class="card-badge job-badge">APPRENTICESHIP</span>
+          </div>
+          <div class="card-content">
+            <div class="card-title">
+              <h3>Solar Systems Trainee</h3>
+              <p><strong>Avondale Tech & Solar Repair</strong></p>
+              <p style="margin-top: 6px;">Hands-on apprenticeship learning solar inverter installation, maintenance, and battery testing.</p>
+              <span class="job-meta-tag">🛠️ 6-Month Paid Program</span>
+            </div>
+            <button class="btn-claim" onclick="openJobModal('Solar Systems Trainee', 'Avondale Tech & Solar Repair')">APPLY NOW</button>
+          </div>
+        </div>
+
+        <div class="offer-card">
+          <div style="position:relative;">
+            <img class="card-image" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80" alt="Culinary Intern">
+            <span class="card-badge job-badge">INTERNSHIP</span>
+          </div>
+          <div class="card-content">
+            <div class="card-title">
+              <h3>Culinary & Pastry Intern</h3>
+              <p><strong>Food Lover's Market Bakery</strong></p>
+              <p style="margin-top: 6px;">Work alongside experienced chefs preparing fresh bread, delicate pastries, and gourmet items.</p>
+              <span class="job-meta-tag">🥐 3-Month Internship</span>
+            </div>
+            <button class="btn-claim" onclick="openJobModal('Culinary & Pastry Intern', 'Food Lover\'s Market Bakery')">APPLY NOW</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <div class="modal-overlay" id="auth-modal">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeModal('auth-modal')">×</button>
+      <h3 id="modal-offer-title">Claim Voucher</h3>
+      <p>Select your country code and enter your WhatsApp number to verify.</p>
+
+      <div class="input-group" id="step-phone">
+        <div class="phone-row">
+          <select id="country-code" class="country-select">
+            <option value="+263">🇿🇼 +263</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+27">🇿🇦 +27</option>
+            <option value="+234">🇳🇬 +234</option>
+            <option value="+254">🇰🇪 +254</option>
+          </select>
+          <input type="tel" id="user-phone" class="input-field" placeholder="77 123 4567" style="flex:1;" required>
+        </div>
+        <button class="btn-claim" onclick="sendOTP()">SEND WHATSAPP CODE</button>
+      </div>
+
+      <div class="input-group" id="step-otp" style="display: none;">
+        <input type="text" id="otp-code" class="input-field" placeholder="Enter 4-Digit Code" maxlength="4" style="text-align: center;">
+        <button class="btn-claim" onclick="verifyOTP()">VERIFY & UNLOCK VOUCHER</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="job-modal">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeModal('job-modal')">×</button>
+      <h3 id="job-modal-title">Apply for Position</h3>
+      <p id="job-modal-subtitle">Submit your details to apply directly to the business.</p>
+
+      <form id="job-application-form" onsubmit="submitJobApplication(event)">
+        <div class="input-group">
+          <label>Full Name *</label>
+          <input type="text" id="applicant-name" class="input-field" placeholder="e.g. Chipo Moyo" required>
+        </div>
+
+        <div class="input-group">
+          <label>Email Address *</label>
+          <input type="email" id="applicant-email" class="input-field" placeholder="e.g. chipo@example.com" required>
+        </div>
+
+        <div class="input-group">
+          <label>Phone / WhatsApp Number *</label>
+          <input type="tel" id="applicant-phone" class="input-field" placeholder="+263 77 123 4567" required>
+        </div>
+
+        <div class="input-group">
+          <label>Brief Bio / Experience / CV Link</label>
+          <textarea id="applicant-notes" class="input-field" placeholder="Tell us briefly about your experience or paste a link to your resume/portfolio..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-claim">SUBMIT APPLICATION</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="qr-modal">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeModal('qr-modal')">×</button>
+      <h3>Show Screen to Cashier</h3>
+      <p>Present this live dynamic QR code at checkout to claim your perk.</p>
+
+      <div class="qr-container">
+        <svg width="150" height="150" viewBox="0 0 100 100">
+          <path d="M0,0 h30 v30 h-30 z M10,10 h10 v10 h-10 z M70,0 h30 v30 h-30 z M80,10 h10 v10 h-10 z M0,70 h30 v30 h-30 z M10,80 h10 v10 h-10 z M40,10 h10 v20 h-10 z M50,40 h20 v10 h-20 z M30,50 h10 v30 h-10 z M70,70 h20 v20 h-20 z" fill="#383a2e"/>
+        </svg>
+      </div>
+
+      <div class="timer-badge">⏳ Code Expires in: <span id="countdown">05:00</span></div>
+
+      <div style="margin-top: 20px; border-top: 1px solid var(--glass-border); padding-top: 16px;">
+        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Or enter Store PIN:</p>
+        <div style="display:flex; gap:8px;">
+          <input type="password" id="store-pin" class="input-field" placeholder="4-Digit PIN" maxlength="4" style="flex:1; text-align: center;">
+          <button class="btn-claim" style="width:auto; padding: 12px 20px;" onclick="redeemPin()">REDEEM</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedOffer = "";
+    let selectedCost = 100;
+    let currentJobTitle = "";
+    let currentBusiness = "";
+    let timerInterval = null;
+
+    // TAB SWITCHING
+    function switchTab(tab) {
+      const tabs = document.querySelectorAll('.tab-btn');
+      tabs.forEach(t => t.classList.remove('active'));
+
+      if (tab === 'offers') {
+        tabs[0].classList.add('active');
+        document.getElementById('section-offers').style.display = 'block';
+        document.getElementById('section-jobs').style.display = 'none';
+      } else {
+        tabs[1].classList.add('active');
+        document.getElementById('section-offers').style.display = 'none';
+        document.getElementById('section-jobs').style.display = 'block';
+      }
+    }
+
+    // REWARD VOUCHER MODAL
+    function openAuthModal(offerName, pointCost = 100) {
+      selectedOffer = offerName;
+      selectedCost = pointCost;
+
+      const pointsEl = document.getElementById('user-points');
+      let currentPoints = parseInt(pointsEl.innerText.replace(' PTS', '').replace(/,/g, ''));
+
+      if (currentPoints < selectedCost) {
+        alert(`❌ Insufficient Points!\n\nYou need ${selectedCost} PTS to claim this offer, but you only have ${currentPoints} PTS.`);
+        return;
+      }
+
+      document.getElementById('modal-offer-title').innerText = offerName;
+      document.getElementById('step-phone').style.display = 'flex';
+      document.getElementById('step-otp').style.display = 'none';
+      document.getElementById('auth-modal').classList.add('active');
+    }
+
+    // JOB APPLICATION MODAL
+    function openJobModal(title, business) {
+      currentJobTitle = title;
+      currentBusiness = business;
+
+      document.getElementById('job-modal-title').innerText = `Apply: ${title}`;
+      document.getElementById('job-modal-subtitle').innerText = `Application sent directly to ${business}.`;
+      document.getElementById('job-modal').classList.add('active');
+    }
+
+    function submitJobApplication(event) {
+      event.preventDefault();
+      const name = document.getElementById('applicant-name').value;
+      const email = document.getElementById('applicant-email').value;
+
+      alert(`🎉 Application Submitted Successfully!\n\nThank you, ${name}! Your application for "${currentJobTitle}" has been submitted to ${currentBusiness}. They will contact you at ${email}.`);
+      
+      document.getElementById('job-application-form').reset();
+      closeModal('job-modal');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+      if(timerInterval) clearInterval(timerInterval);
+    }
+
+    function sendOTP() {
+      const codeSelect = document.getElementById('country-code').value;
+      const rawPhone = document.getElementById('user-phone').value.trim().replace(/[\s-]/g, '');
+
+      if (!rawPhone || rawPhone.length < 6 || !/^[0-9]+$/.test(rawPhone)) {
+        alert("Please enter a valid phone number.");
+        return;
+      }
+
+      const fullPhone = `${codeSelect} ${rawPhone}`;
+      alert(`📲 Demo WhatsApp Code sent to ${fullPhone}!\n\n(Use demo code: 1234)`);
+      document.getElementById('step-phone').style.display = 'none';
+      document.getElementById('step-otp').style.display = 'flex';
+    }
+
+    function verifyOTP() {
+      const code = document.getElementById('otp-code').value.trim();
+      if (code === "1234") {
+        closeModal('auth-modal');
+        openQRModal();
+      } else {
+        alert("Invalid OTP Code. Use '1234' for demo mode.");
+      }
+    }
+
+    function openQRModal() {
+      document.getElementById('qr-modal').classList.add('active');
+      startTimer(300);
+    }
+
+    function startTimer(duration) {
+      let timer = duration, minutes, seconds;
+      const display = document.getElementById('countdown');
+      if(timerInterval) clearInterval(timerInterval);
+
+      timerInterval = setInterval(() => {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+
+        if (--timer < 0) {
+          clearInterval(timerInterval);
+          display.textContent = "EXPIRED";
+          alert("Voucher QR code has expired. Please claim again.");
+          closeModal('qr-modal');
+        }
+      }, 1000);
+    }
+
+    function redeemPin() {
+      const pin = document.getElementById('store-pin').value.trim();
+      if (pin.length === 4) {
+        const pointsEl = document.getElementById('user-points');
+        let currentPoints = parseInt(pointsEl.innerText.replace(' PTS', '').replace(/,/g, ''));
+        
+        currentPoints -= selectedCost;
+        pointsEl.innerText = currentPoints.toLocaleString() + " PTS";
+        alert(`✅ Voucher Successfully Redeemed for ${selectedOffer}!\n\n-${selectedCost} PTS deducted. Remaining: ${currentPoints.toLocaleString()} PTS`);
+        closeModal('qr-modal');
+      } else {
+        alert("Please enter a valid 4-digit Store PIN.");
+      }
+    }
+
+    // SOFT PARTICLES ENGINE
+    (function initParticles() {
+      const canvas = document.getElementById('particles-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      const particles = [];
+      for (let i = 0; i < 35; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 3 + 1,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3
+        });
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = 'rgba(187, 172, 193, 0.4)';
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height;
+          if (p.y > height) p.y = 0;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+  </script>
+</body>
+</html>
