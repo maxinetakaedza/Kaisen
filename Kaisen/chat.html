@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kaisen AI Chat</title>
+    <style>
+      body { font-family: Arial, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 16px; }
+      .row { display: flex; gap: 8px; }
+      input { flex: 1; padding: 10px; font-size: 16px; }
+      button { padding: 10px 14px; font-size: 16px; cursor: pointer; }
+      #reply { margin-top: 18px; white-space: pre-wrap; background: #f6f6f6; padding: 12px; border-radius: 8px; }
+    </style>
+  </head>
+  <body>
+    <h1>Kaisen AI Chat</h1>
+
+    <form id="chatForm">
+      <div class="row">
+        <input id="message" type="text" placeholder="Ask something..." required />
+        <button id="sendBtn" type="submit">Send</button>
+      </div>
+    </form>
+
+    <div id="reply">No reply yet.</div>
+
+    <script>
+      const form = document.getElementById("chatForm");
+      const input = document.getElementById("message");
+      const replyBox = document.getElementById("reply");
+      const sendBtn = document.getElementById("sendBtn");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const message = input.value.trim();
+        if (!message) return;
+
+        sendBtn.disabled = true;
+        sendBtn.textContent = "Sending...";
+        replyBox.textContent = "Loading...";
+
+        try {
+          const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message })
+          });
+
+          const data = await res.json();
+
+          if (!res.ok || !data.ok) {
+            replyBox.textContent = data.error || "Something went wrong.";
+          } else {
+            replyBox.textContent = data.reply || "(empty reply)";
+          }
+        } catch (err) {
+          replyBox.textContent = "Network error. Please try again.";
+        } finally {
+          sendBtn.disabled = false;
+          sendBtn.textContent = "Send";
+        }
+      });
+    </script>
+  </body>
+</html>
